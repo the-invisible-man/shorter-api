@@ -1,0 +1,239 @@
+paths:
+  /providers/{id}:
+    delete:
+      tags:
+        - Provider
+      summary: "Delete a provider"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the provider"
+      responses:
+        '204':
+          description: "Success"
+  /clients:
+    get:
+      tags:
+        - Client
+      summary: "Returns all clients"
+      operationId: getClients
+      parameters:
+        - in: query
+          name: page
+          description: page number of records
+          schema:
+            type: integer
+            format: int
+        - in: query
+          name: limit
+          description: max number of records to return
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: Paginated list of \"Client\" objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Client'
+  /client/{id}:
+    delete:
+      tags:
+        - Client
+      summary: "Delete a client"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the client"
+      responses:
+        '204':
+          description: "Success"
+  /services/{id}:
+    delete:
+      tags:
+        - Service
+      summary: "Delete a service"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the service"
+      responses:
+        '204':
+          description: "Success"
+  /visits/{id}:
+    patch:
+        tags:
+        - Visit
+      summary: "Update a visit"
+      operationId: updateVisit
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the visit"
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitUpdate'
+      responses:
+        '200':
+          description: "Requested visit"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Visit'
+    delete:
+      tags:
+        - Visit
+      summary: "Delete a visit"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the visit"
+      responses:
+        '204':
+          description: "Success"
+  /law-firms:
+    get:
+      tags:
+        - LawFirm
+      summary:  "Returns all law firms"
+      operationId:  getLawFirm
+      parameters:
+        - in: query
+          name: page
+          description:  page number of records
+          schema:
+            type: integer
+            format: int
+        - in:  query
+          name: limit
+          description:  max number of records to return
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description:  Paginated list of \"LawFirm"\ objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LawFirm'
+                  pagination:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        format: integer
+                      total:
+                        type: number
+                        format: integer
+                      has_more:
+                        type: boolean
+                      per_page:
+                        type: number
+                        format: integer
+                      current_page:
+                        type: number
+                        format: integer
+                      last_page:
+                        type: number
+                        format: integer
+                      previous_url:
+                        type: string
+                        format: url
+                      next_url:
+                        type: string
+                        format: url
+  /law-firms/{id}:
+    get:
+      tags:
+        - LawFirm
+      summary:  "Fetch a law firm"
+      operationId:  getLawFirm
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description:  "ID of the law firm"
+      responses:
+        '200':
+          description:  "Requested law firm"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/LawFirm'
+        '404':
+          description:  "Law firm not found"
+    delete:
+        tags:
+          - LawFirm
+        summary:  "Delete a law firm"
+        operationId:  deleteLawFirm
+        parameters:
+          - in: path
+            name: id
+            schema:
+              type: string
+            required: true
+            description:  "ID of the law firm"
+        responses:
+          '204':
+            description: "Success"

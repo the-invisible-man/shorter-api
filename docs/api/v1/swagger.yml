@@ -1,0 +1,1018 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: iReclaim Billing API Auto Mocking
+    url: https://virtserver.swaggerhub.com/GRANADOSCARLOS91/ireclaim-billing/1.0.0
+info:
+  version: "1.0.0"
+  title: iReclaim Billing
+  description: The API for the iReclaim billing microservice
+paths:
+  /providers:
+    get:
+      tags:
+        - Provider
+      summary: "Returns all providers"
+      operationId: getProviders
+      parameters:
+        - in: query
+          name: page
+          description: page number of records
+          schema:
+            type: integer
+            format: int
+        - in: query
+          name: limit
+          description: max number of records to return
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: Paginated list of \"Provider\" objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Provider'
+                  pagination:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        format: integer
+                      total:
+                        type: number
+                        format: integer
+                      has_more:
+                        type: boolean
+                      per_page:
+                        type: number
+                        format: integer
+                      current_page:
+                        type: number
+                        format: integer
+                      last_page:
+                        type: number
+                        format: integer
+                      previous_url:
+                        type: string
+                        format: url
+                      next_url:
+                        type: string
+                        format: url
+    post:
+      tags:
+        - Provider
+      summary: "Create a new provider"
+      operationId: createProvider
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderCreate'
+      responses:
+        '201':
+          description: "Provider created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Provider'
+  /providers/{id}:
+    get:
+      tags:
+        - Provider
+      summary: "Fetch a provider"
+      operationId: getProvider
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the provider"
+      responses:
+        '200':
+          description: "Requested provider"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Provider'
+        '404':
+          description: "Visit not found"
+    patch:
+      tags:
+        - Provider
+      summary: "Update a single provider"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the provider"
+      operationId: updateProvider
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderUpdate'
+      responses:
+        '200':
+          description: "Provider updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Provider'
+  /clients:
+    post:
+      tags:
+        - Client
+      summary: "Create a new client"
+      operationId: createClient
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+      responses:
+        '201':
+          description: "Client created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Client'
+  /client/{id}:
+    patch:
+      tags:
+        - Client
+      summary: "Update a single client"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the provider"
+      operationId: updateClient
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientUpdate'
+      responses:
+        '200':
+          description: "Client updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Client'
+  /services:
+    get:
+      tags:
+        - Service
+      summary: "Returns all services"
+      operationId: getServices
+      parameters:
+        - in: query
+          name: provider_id
+          description: "(optional) Filter by the id of the provider"
+          required: false
+          schema:
+            type: integer
+            format: int
+        - in: query
+          name: page
+          description: page number of records
+          schema:
+            type: integer
+            format: int
+        - in: query
+          name: per_page
+          description: max number of records to return per page
+          schema:
+            type: integer
+            format: int
+        - in: query
+          name: expand
+          description: 'relationships to include: "provider"'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated list of \"Services\" objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Service'
+                  pagination:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        format: integer
+                      total:
+                        type: number
+                        format: integer
+                      has_more:
+                        type: boolean
+                      per_page:
+                        type: number
+                        format: integer
+                      current_page:
+                        type: number
+                        format: integer
+                      last_page:
+                        type: number
+                        format: integer
+                      previous_url:
+                        type: string
+                        format: url
+                      next_url:
+                        type: string
+                        format: url
+    post:
+      tags:
+        - Service
+      summary: "Create a new service"
+      operationId: createService
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreate'
+      responses:
+        '201':
+          description: "Client created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Service'
+  /services/{id}:
+    patch:
+      tags:
+        - Service
+      summary: "Update a single service"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the provider"
+      operationId: updateService
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdate'
+      responses:
+        '200':
+          description: "Service updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Service'
+  /visits:
+    get:
+      tags:
+        - Visit
+      summary: "Returns all visits"
+      operationId: getVisits
+      parameters:
+        - in: query
+          name: provider_id
+          description: "(optional) Filter by the id of the provider"
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: service_id
+          description: "(optional) Filter by the id of the service"
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: client_id
+          description: "(optional) Filter by the id of the client"
+          required: false
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: page
+          description: page number of records
+          schema:
+            type: integer
+            format: int
+        - in: query
+          name: per_page
+          description: max number of records to return per page
+          schema:
+            type: integer
+            format: int
+        - in: query
+          name: expand
+          description: '(optional) relationships to include: "provider,service,client"'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated list of \"Visit\" objects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Service'
+                  pagination:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        format: integer
+                      total:
+                        type: number
+                        format: integer
+                      has_more:
+                        type: boolean
+                      per_page:
+                        type: number
+                        format: integer
+                      current_page:
+                        type: number
+                        format: integer
+                      last_page:
+                        type: number
+                        format: integer
+                      previous_url:
+                        type: string
+                        format: url
+                      next_url:
+                        type: string
+                        format: url
+    post:
+      tags:
+        - Visit
+      summary: "Create a new visit"
+      operationId: createVisit
+      requestBody:
+        description: "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VisitCreate'
+      responses:
+        '201':
+          description: "Visit created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Visit'
+  /visits/{id}:
+    get:
+      tags:
+        - Visit
+      summary: "Fetch a visit"
+      operationId: getVisit
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "ID of the visit"
+        - in: query
+          name: expand
+          description: '(optional) relationships to include: "provider,service,client"'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Requested visit"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Visit'
+        '404':
+          description: "Visit not found"
+  /cases:
+    post:
+      tags:
+        - Case
+      summary:  "Create a new case"
+      operationId:  createCase
+      requestBody:
+        description:  "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseCreate'
+      responses:
+        '201':
+          description:  "Case created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Case'
+  /cases/{id}:
+    patch:
+      tags:
+        - Case
+      summary:  "Update a single case"
+      operationId:  updateCase
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description:  "ID of the case"
+      requestBody:
+        description:  "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseUpdate'
+      responses:
+        '200':
+          description:  "Case updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Case'
+  /law-firms:
+    post:
+      tags:
+      - LawFirm
+      summary:  "Create a new law firm"
+      operationId:  createLawFirm
+      requestBody:
+        description:  "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LawFirmCreate'
+      responses:
+        '201':
+          description:  "Law firm created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/LawFirm'
+  /law-firms/{id}:
+    patch:
+      tags:
+        - LawFirm
+      summary:  "Update a single law firm"
+      operationId:  updateLawFirm
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description:  "ID of the law firm"
+      requestBody:
+        description:  "Allowed fields"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LawFirmUpdate'
+      responses:
+        '200':
+          description:  "Law firm updated successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, error]
+                  error_code:
+                    type: number
+                  message:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/LawFirm'
+components:
+  schemas:
+    Client:
+      type: object
+      description: A client of iReclaim seeking medical treatment
+      properties:
+        id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        address_1:
+          type: string
+        address_2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+        created_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+    ClientCreate:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        address_1:
+          type: string
+        address_2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+    ClientUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        address_1:
+          type: string
+        address_2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+    Provider:
+      type: object
+      description: A provider of medical services for clients
+      properties:
+        id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        provider_name:
+          type: string
+        cpt_code:
+          type: string
+        created_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+    ProviderCreate:
+      type: object
+      properties:
+        provider_name:
+          type: string
+        cpt_code:
+          type: string
+    ProviderUpdate:
+      type: object
+      description: "At least one field must be included"
+      properties:
+        provider_name:
+          description: "Optional"
+          type: string
+        cpt_code:
+          description: "Optional"
+          type: string
+    Service:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        provider_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+        service_revision:
+          $ref: '#/components/schemas/ServiceRevision'
+    ServiceRevision:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        provider_rate:
+          type: number
+          format: int
+        lp_rate:
+          type: number
+          format: int
+        lop_rate:
+          type: number
+          format: int
+        duration:
+          type: number
+          format: int
+        created_at:
+          type: string
+          format: datetime
+    ServiceCreate:
+      type: object
+      properties:
+        description:
+          type: string
+        provider_id:
+          type: string
+          format: uuid
+        provider_rate:
+          type: number
+          format: int64
+        lp_rate:
+          type: number
+          format: int64
+        lop_rate:
+          type: number
+          format: int64
+        rate_duration:
+          type: number
+          format: int64
+    ServiceUpdate:
+      type: object
+      properties:
+        description:
+          type: string
+        provider_rate:
+          type: number
+          format: int64
+        lp_rate:
+          type: number
+          format: int64
+        lop_rate:
+          type: number
+          format: int64
+        rate_duration:
+          type: number
+          format: int64
+    Visit:
+      type: object
+      description: A fulfilled appointment between the client and the provider
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider_id:
+          type: string
+          format: uuid
+        case_id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        service_id:
+          type: string
+          format: uuid
+        provider_rate:
+          type: number
+          format: int64
+        lp_rate:
+          type: number
+          format: int64
+        lop_rate:
+          type: number
+          format: int64
+        duration_rate:
+          type: number
+          format: int64
+        total_duration:
+          type: number
+          format: int64
+        invoice_url:
+          type: string
+          format: url
+        service_provided_at:
+          type: string
+          format: datetime
+        create_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+    VisitCreate:
+      type: object
+      description: Create a fulfilled appointment between the client and the provider
+      properties:
+        id:
+          type: string
+          format: uuid
+        service_id:
+          type: string
+          format: uuid
+        case_id:
+          type: string
+          format: uuid
+        total_duration:
+          type: number
+          format: int64
+        service_provided_at:
+          type: string
+          description: Timestamp of when the service was provided to the client
+          format: datetime
+    VisitUpdate:
+      type: object
+      description: Update a visit
+      properties:
+        total_duration:
+          type: number
+          format: int64
+        service_provided_at:
+          type: string
+          format: datetime
+    LawFirm:
+      type: object
+      description:  A law firm working with iReclaim
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        organization_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+    LawFirmCreate:
+      type: object
+      description:  Create a law firm with a required name
+      properties:
+        name:
+          type: string
+    LawFirmUpdate:
+      type: object
+      description:  Update a law firm with a new required name
+      properties:
+        name:
+          type: string
+    Case:
+      type: object
+      description: Represents ongoing business between iReclaim and a client
+      properties:
+        id:
+          type: string
+          format: uuid
+        law_firm_id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            - open
+            - closed
+        resolution:
+          type: string
+          enum:
+            - won
+            - lost
+        organization_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: datetime
+        updated_at:
+          type: string
+          format: datetime
+    CaseCreate:
+      type: object
+      description: Create a case for a client
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: (Optional) This is only allowed for the iReclaim org
+        client_id:
+          type: string
+          format: uuid
+        law_firm_id:
+          type: string
+          format: uuid
+          description: (Optional)
+        status:
+          type: string
+          enum:
+            - open
+            - closed
+        resolution:
+          type: string
+          enum:
+            - won
+            - lost
+    CaseUpdate:
+      type: object
+      description: Update a case
+      properties:
+        status:
+          type: string
+          enum:
+            - open
+            - closed
+        resolution:
+          type: string
+          enum:
+            - won
+            - lost
