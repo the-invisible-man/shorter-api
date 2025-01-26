@@ -7,6 +7,7 @@ use App\Packages\Url\Repositories\UrlRepository;
 use App\Packages\Url\Traits\CachesUrls;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class UrlReadService
 {
@@ -28,6 +29,7 @@ class UrlReadService
      * @param string $path
      *
      * @return Url|null
+     * @throws InvalidArgumentException
      */
     public function findByShortUrl(string $path): ?Url
     {
@@ -51,6 +53,8 @@ class UrlReadService
      * @param string $path
      *
      * @return Url|null
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function fetchFromCache(string $key, string $path): ?Url
     {
@@ -64,6 +68,8 @@ class UrlReadService
                 'message' => $e->getMessage(),
                 'exception' => $e,
             ]);
+
+            return null;
         }
 
         // Using "debug" instead to avoid overwhelming the logs

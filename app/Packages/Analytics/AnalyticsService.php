@@ -44,6 +44,9 @@ class AnalyticsService
     {
         $key = $this->makeUrlKey($urlId);
 
+        // Redis supports atomic counters which handles
+        // race conditions (two people visiting the same URL
+        // at the same time).
         $this->redis->incr($key);
     }
 

@@ -12,6 +12,7 @@ use Illuminate\Events\Dispatcher;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class UrlService
 {
@@ -33,13 +34,16 @@ class UrlService
 
     /**
      * @param string $shortUrl
-     * @return Url
+     * @return Url|null
+     * @throws InvalidArgumentException
      */
-    public function route(string $shortUrl): Url
+    public function visitUrl(string $shortUrl): ?Url
     {
         $url = $this->urlReadService->findByShortUrl($shortUrl);
 
-        $this->dispatcher->dispatch(new UrlVisited($url));
+        if ($url) {
+            $this->dispatcher->dispatch(new UrlVisited($url));
+        }
 
         return $url;
     }
@@ -124,7 +128,7 @@ class UrlService
                     continue;
                 } finally {
                     $outputFile->insertOne([
-                        $row[0],
+                        $longUrl,
                         $destination,
                     ]);
 
@@ -152,9 +156,10 @@ class UrlService
     protected function calculateUpdateInterval(int $totalRows): int
     {
         // If the file is more than 20 rows, then we put a
-        // buffer on the update internal and send updates
-        // only every 20 rows processed.
-        return $totalRows <= 20 ? 1 : (int) ceil($totalRows / 20);
+        // buffer on the update interval by dividing the total
+        // rows into 20 chunks. This way we'll only broadcast
+        // at most 20 events, keeping the broadcasting lightweight.
+        return $totalRows <= 100 ? 1 : (int) ceil($totalRows / 20);
     }
 
     /**

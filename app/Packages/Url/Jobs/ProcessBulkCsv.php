@@ -18,8 +18,7 @@ class ProcessBulkCsv implements ShouldQueue
         protected string $origin,
         protected string $destination,
         protected string $totalRows,
-    )
-    {
+    ) {
     }
 
     /**
