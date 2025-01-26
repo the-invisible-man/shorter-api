@@ -7,7 +7,7 @@ use App\Packages\Url\Repositories\UrlRepository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ProcessBulkUrlCreated implements ShouldQueue
+class FireBulkUrlCreateEvents implements ShouldQueue
 {
     /**
      * @param array $urlIds

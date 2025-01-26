@@ -3,10 +3,14 @@
 namespace App\Packages\Url;
 
 use App\Packages\Url\Events\UrlVisited;
-use App\Packages\Url\Jobs\ProcessBulkUrlCreated;
+use App\Packages\Url\Jobs\FireBulkUrlCreateEvents;
+use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\Url;
+use App\Packages\Url\Structs\CsvProcessComplete;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Events\Dispatcher;
+use League\Csv\Reader;
+use League\Csv\Writer;
 use Psr\Log\LoggerInterface;
 
 class UrlService
@@ -41,74 +45,98 @@ class UrlService
     }
 
     /**
-     * @param string $jobId
-     * @param string $origin
-     * @param int $totalRows
-     * @param string $destination
+     * @param ProcessBulkCsv $job
      * @return bool
      * @throws \Throwable
      */
-    public function createFromCsv(string $jobId, string $origin, int $totalRows, string $destination): bool
+    public function createFromCsv(ProcessBulkCsv $job): bool
     {
         try {
-            $ids = $this->processCsv($origin, $totalRows, $destination);
+            $result = $this->processCsv($job);
         } catch (\Exception $e) {
             $this->logger->error("Failed to process CSV file", [
-                'jobId' => $jobId,
+                'jobId' => $job->getJobId(),
                 'message' => $e->getMessage(),
-                'origin' => $origin,
-                'destination' => $destination,
-                'totalRows' => $totalRows,
+                'origin' => $job->getOrigin(),
+                'destination' => $job->getDestination(),
+                'totalRows' => $job->getTotalRows(),
                 'raw_exception' => $e,
             ]);
 
             return false;
         }
 
-        if ($ids) {
+        if ($result->getUrlIds()) {
             // We've silenced all events fired by UrlWriteService::create()
             // so that we only  fire them if the entirety  of the whole job
             // was  successful. To finish  processing  as fast as possible,
             // the job below  will be  queued, and when executed, will fire
             // all the UrlCreated events we silenced in a different process.
             // This allows us to return the results to the user as fast as
-            // possible and keeping experience seamless.
-            dispatch(new ProcessBulkUrlCreated($ids));
+            // possible, keeping experience seamless, and remaining committed
+            // to keeping the app event driven.
+            dispatch(new FireBulkUrlCreateEvents($result->getUrlIds()));
         }
 
         return true;
     }
 
     /**
-     * @param string $origin
-     * @param int $totalRows
-     * @param string $destination
+     * @param ProcessBulkCsv $job
      * @param int $maxAttempts
-     *
-     * @return array
-     *
+     * @return CsvProcessComplete
      * @throws \Throwable
      */
-    protected function processCsv(string $origin, int $totalRows, string $destination, int $maxAttempts = 3): array
+    protected function processCsv(ProcessBulkCsv $job, int $maxAttempts = 3): CsvProcessComplete
     {
-        return $this->databaseManager->transaction(function () use ($totalRows, $origin, $destination) {
-            $updateInternal = $this->calculateUpdateInterval($totalRows);
-            $processed = 0;
+        return $this->databaseManager->transaction(function () use ($job) {
+            $updateInterval = $this->calculateUpdateInterval($job->getTotalRows());
+            $outputFile = $this->createOutputStream($job->getDestination());
+
             $ids = [];
+            $processed = 0;
+            $failures = 0;
 
-            foreach ($this->readFile($origin) as $row) {
-                $url = $this->urlWriteService->create($row[0], false, false);
+            foreach ($this->readFile($job->getOrigin()) as $row) {
+                try {
+                    // We are running in a nested transaction, therefore failures
+                    // caused by the two-step process of the create() method won't
+                    // cause the overall job to fail. Ideally, such a thing shouldn't
+                    // happen. But if it does, we'll just skip this url and mark it
+                    // as empty in the output CSV.
+                    $longUrl = $row[0];
 
-                $ids[] = $url->id;
+                    $url = $this->urlWriteService->create($longUrl, false, false);
 
-                $processed++;
+                    $destination = $url->toDestinationUrl();
+                    $ids[] = $url->id;
+                } catch (\Exception $e) {
+                    $failures++;
+                    $destination = '';
 
-                if ($this->shouldBroadcast($processed, $totalRows, $updateInternal)) {
-                    $this->broadcastProgress($processed, $totalRows);
+                    $this->logger->error("Failed to create single url in bulk create", [
+                        'jobId' => $job->getJobId(),
+                        'long_url' => $longUrl,
+                        'message' => $e->getMessage(),
+                        'raw_exception' => $e,
+                    ]);
+
+                    continue;
+                } finally {
+                    $outputFile->insertOne([
+                        $row[0],
+                        $destination,
+                    ]);
+
+                    $processed++;
+
+                    if ($this->shouldBroadcast($processed, $job->getTotalRows(), $updateInterval)) {
+                        $this->broadcastProgress($processed, $job->getTotalRows());
+                    }
                 }
             }
 
-            return $ids;
+            return new CsvProcessComplete($job, $processed, $failures, $ids);
         }, $maxAttempts);
     }
 
@@ -137,6 +165,8 @@ class UrlService
      */
     protected function shouldBroadcast(int $totalProcessed, int $totalRows, int $updateInterval): bool
     {
+        // We'll either broadcast if we're at the calculated interval
+        // or if we've reached the total number of rows.
         return ($totalProcessed % $updateInterval) === 0 || $totalProcessed === $totalRows;
     }
 
@@ -146,10 +176,26 @@ class UrlService
      *
      * @param string $origin
      * @return \Generator
+     * @throws \League\Csv\Exception
+     * @throws \League\Csv\UnavailableStream
      */
     protected function readFile(string $origin): \Generator
     {
+        $csv = Reader::createFromPath($origin, 'r');
 
+        foreach ($csv->getRecords() as $row) {
+            yield $row;
+        }
+    }
+
+    /**
+     * @param string $destination
+     * @return Writer
+     * @throws \League\Csv\UnavailableStream
+     */
+    protected function createOutputStream(string $destination): Writer
+    {
+        return Writer::createFromPath($destination);
     }
 
     /**

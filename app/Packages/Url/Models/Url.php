@@ -16,4 +16,9 @@ class Url extends Model
     {
         return $this->only(['id', 'short_url', 'long_url']);
     }
+
+    public function toDestinationUrl(): string
+    {
+
+    }
 }
