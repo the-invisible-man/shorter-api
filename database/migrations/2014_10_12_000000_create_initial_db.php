@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::create('analytics', function (Blueprint $table) {
+        Schema::create('url_metrics', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->bigInteger('url_id')->unsigned()->index();
             $table->integer('count')->default(0);
