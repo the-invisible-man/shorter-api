@@ -3,12 +3,17 @@
 namespace App\Packages\Url;
 
 use App\Packages\Url\Events\UrlVisited;
+use App\Packages\Url\Exceptions\MaxRowLimit;
 use App\Packages\Url\Jobs\FireBulkUrlCreateEvents;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
+use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\Models\Url;
+use App\Packages\Url\Repositories\JobRepository;
 use App\Packages\Url\Structs\CsvProcessComplete;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Broadcast;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use Psr\Log\LoggerInterface;
@@ -22,6 +27,7 @@ class UrlService
      * @param Dispatcher $dispatcher
      * @param DatabaseManager $databaseManager
      * @param LoggerInterface $logger
+     * @param JobRepository $jobRepository
      */
     public function __construct(
         protected UrlReadService $urlReadService,
@@ -29,6 +35,7 @@ class UrlService
         protected Dispatcher  $dispatcher,
         protected DatabaseManager $databaseManager,
         protected LoggerInterface $logger,
+        protected JobRepository $jobRepository,
     ) {
     }
 
@@ -48,6 +55,7 @@ class UrlService
         return $url;
     }
 
+
     /**
      * @param ProcessBulkCsv $job
      * @return bool
@@ -56,6 +64,7 @@ class UrlService
     public function createFromCsv(ProcessBulkCsv $job): bool
     {
         try {
+            $this->jobRepository->update($job->getJobRecord(), JobRepository::STATUS['in-progress']);
             $result = $this->processCsv($job);
         } catch (\Exception $e) {
             $this->logger->error("Failed to process CSV file", [
@@ -66,6 +75,8 @@ class UrlService
                 'totalRows' => $job->getTotalRows(),
                 'raw_exception' => $e,
             ]);
+
+            $this->jobRepository->update($job->getJobRecord(), JobRepository::STATUS['failed']);
 
             return false;
         }
@@ -81,6 +92,8 @@ class UrlService
             // to keeping the app event driven.
             dispatch(new FireBulkUrlCreateEvents($result->getUrlIds()));
         }
+
+        $this->jobRepository->update($job->getJobRecord(), JobRepository::STATUS['completed']);
 
         return true;
     }
@@ -110,6 +123,7 @@ class UrlService
                     // as empty in the output CSV.
                     $longUrl = $row[0];
 
+                    // Crate the URL with cache and events off for bulk transactions.
                     $url = $this->urlWriteService->create($longUrl, false, false);
 
                     $destination = $url->toDestinationUrl();
@@ -125,7 +139,7 @@ class UrlService
                         'raw_exception' => $e,
                     ]);
 
-                    continue;
+                    continue; // The "finally" block will still execute.
                 } finally {
                     $outputFile->insertOne([
                         $longUrl,
@@ -135,10 +149,15 @@ class UrlService
                     $processed++;
 
                     if ($this->shouldBroadcast($processed, $job->getTotalRows(), $socketUpdateInterval)) {
-                        $this->broadcastProgress($processed, $job->getTotalRows());
+                        $this->broadcastProgress($job, $processed, $job->getTotalRows());
                     }
                 }
             }
+
+            // Push that we completed the job. The file is ready to be accessed at this point.
+            // The frontend will know that the job was completed because both "processed" and
+            // "total rows" will equal each other.
+            $this->broadcastProgress($job, $processed, $job->getTotalRows());
 
             return new CsvProcessComplete($job, $processed, $failures, $ids);
         }, $maxAttempts);
@@ -204,13 +223,17 @@ class UrlService
     }
 
     /**
+     * @param ProcessBulkCsv $job
      * @param int $processed
      * @param int $totalRows
      *
      * @return void
      */
-    protected function broadcastProgress(int $processed, int $totalRows): void
+    protected function broadcastProgress(ProcessBulkCsv $job, int $processed, int $totalRows): void
     {
-
+        Broadcast::on("jobs.{$job->getJobId()}")->with([
+            'processed' => $processed,
+            'totalRows' => $totalRows,
+        ])->send();
     }
 }

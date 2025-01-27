@@ -23,6 +23,5 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Passport::useClientModel(Client::class);
     }
 }

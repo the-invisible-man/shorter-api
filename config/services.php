@@ -1,5 +1,7 @@
 <?php
 
+use App\Packages\Url\CsvBulkJobService;
+
 return [
 
     /*
@@ -31,4 +33,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    CsvBulkJobService::class => [
+        'max_row_limit' => 20000,
+    ]
 ];

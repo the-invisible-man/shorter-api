@@ -23,6 +23,21 @@ return new class extends Migration {
             $table->bigInteger('url_id')->unsigned()->index();
             $table->integer('count')->default(0);
         });
+
+        Schema::create('bulk_csv_jobs', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->enum('status', [
+                'pending',
+                'in-progress',
+                'failed',
+                'completed'
+            ])->default('pending');
+
+            $table->string('original_csv_path');
+            $table->string('destination_csv_path');
+
+            $table->timestamps();
+        });
     }
 
     /**

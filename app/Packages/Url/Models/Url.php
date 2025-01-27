@@ -3,7 +3,6 @@
 namespace App\Packages\Url\Models;
 
 use App\Model;
-use Carbon\Carbon;
 
 /**
  * @property int $id
@@ -12,13 +11,19 @@ use Carbon\Carbon;
  */
 class Url extends Model
 {
+    /**
+     * @return array
+     */
     public function toCache(): array
     {
         return $this->only(['id', 'short_url', 'long_url']);
     }
 
+    /**
+     * @return string
+     */
     public function toDestinationUrl(): string
     {
-
+        return url($this->short_url);
     }
 }

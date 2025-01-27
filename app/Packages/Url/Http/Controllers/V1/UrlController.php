@@ -3,8 +3,10 @@
 namespace App\Packages\Url\Http\Controllers\V1;
 
 use App\Http\V1\Controllers\Controller;
+use App\Packages\Url\Http\Requests\V1\CreateJob;
 use App\Packages\Url\Http\Requests\V1\CreateUrl;
 use App\Packages\Url\Http\Serializers\V1\UrlSerializer;
+use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\UrlReadService;
 use App\Packages\Url\UrlService;
 use App\Packages\Url\UrlWriteService;
@@ -36,11 +38,6 @@ class UrlController extends Controller
         $url = $this->urlWriteService->create($data['long_url']);
 
         return $this->itemResponse($url, new UrlSerializer, Response::HTTP_CREATED);
-    }
-
-    public function bulk(): JsonResponse
-    {
-        
     }
 
     /**

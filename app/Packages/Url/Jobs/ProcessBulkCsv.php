@@ -2,19 +2,20 @@
 
 namespace App\Packages\Url\Jobs;
 
+use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\UrlService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ProcessBulkCsv implements ShouldQueue
 {
     /**
-     * @param string $jobId
+     * @param BulkCsvJob $job
      * @param string $origin
      * @param string $destination
      * @param string $totalRows
      */
     public function __construct(
-        protected string $jobId,
+        protected BulkCsvJob $job,
         protected string $origin,
         protected string $destination,
         protected string $totalRows,
@@ -35,7 +36,15 @@ class ProcessBulkCsv implements ShouldQueue
      */
     public function getJobId(): string
     {
-        return $this->jobId;
+        return $this->job->id;
+    }
+
+    /**
+     * @return BulkCsvJob
+     */
+    public function getJobRecord(): BulkCsvJob
+    {
+        return $this->job;
     }
 
     /**
