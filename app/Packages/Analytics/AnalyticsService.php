@@ -20,14 +20,14 @@ class AnalyticsService
     }
 
     /**
-     * @param int $urlId
+     * @param int $path
      * @param int $increment
      * @return void
      */
-    public function increaseDbCount(int $urlId, int $increment): void
+    public function increaseDbCount(int $path, int $increment): void
     {
-        if ($urlMetric = $this->repository->findByUrlId($urlId)) {
-            $this->repository->create($urlId, $increment);
+        if ($urlMetric = $this->repository->findByPath($path)) {
+            $this->repository->create($path, $increment);
             return;
         }
 
@@ -35,14 +35,14 @@ class AnalyticsService
     }
 
     /**
-     * @param int $urlId
+     * @param string $path
      *
      * @return void
      * @throws \RedisException
      */
-    public function increaseMemoryCount(int $urlId): void
+    public function increaseMemoryCount(string $path): void
     {
-        $key = $this->makeUrlKey($urlId);
+        $key = $this->makeUrlKey($path);
 
         // Redis supports atomic counters which handles
         // race conditions (two people visiting the same URL
@@ -51,11 +51,11 @@ class AnalyticsService
     }
 
     /**
-     * @param int $urlId
+     * @param string $path
      * @return string
      */
-    protected function makeUrlKey(int $urlId): string
+    protected function makeUrlKey(string $path): string
     {
-        return "url:{$urlId}:access_count";
+        return "url:{$path}:access_count";
     }
 }

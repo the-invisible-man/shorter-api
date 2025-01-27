@@ -11,6 +11,7 @@ use App\Packages\Url\Http\Serializers\V1\BulkCsvJobSerializer;
 use App\Packages\Url\Repositories\JobRepository;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class JobController extends Controller
 {
@@ -66,14 +67,24 @@ class JobController extends Controller
 
     /**
      * @param int $jobId
-     * @return JsonResponse
+     * @return StreamedResponse
      */
-    public function download(int $jobId): JsonResponse
+    public function download(int $jobId): StreamedResponse
     {
         $job = $this->repository->find($jobId);
 
         if (!$job) {
             $this->throwNotFoundException();
         }
+
+        $fileName = 'processed-'.basename($job->destination_csv_path);
+
+        return response()->streamDownload(function () use ($job) {
+            echo file_get_contents($job->destination_csv_path);
+        }, $fileName, [
+            'content-type' => 'application/csv',
+            'content-disposition' => "attachment; filename={$fileName}",
+            'pragma' => 'no-cache',
+        ]);
     }
 }

@@ -16,15 +16,24 @@ class EloquentUrlMetricRepository implements UrlMetricRepository
     }
 
     /**
-     * @param int $urlId
+     * @param string $path
+     * @return UrlMetric|null
+     */
+    public function findByPath(string $path): ?UrlMetric
+    {
+        return UrlMetric::where('path', $path)->first();
+    }
+
+    /**
+     * @param string $path
      * @param int $count
      * @return UrlMetric
      */
-    public function create(int $urlId, int $count = 0): UrlMetric
+    public function create(string $path, int $count = 0): UrlMetric
     {
         $metric = new UrlMetric;
 
-        $metric->url_id = $urlId;
+        $metric->path = $path;
         $metric->count = $count;
 
         $metric->save();

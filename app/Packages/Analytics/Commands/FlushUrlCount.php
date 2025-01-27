@@ -23,13 +23,15 @@ class FlushUrlCount extends Command
      */
     public function handle(): void
     {
+        // Fetch all access_count keys. This will return the
+        // current counts for all URLs.
         $keys = $this->getRedis()->keys('url:*:access_count');
 
         foreach ($keys as $key) {
-            $urlId = explode(':', $key)[1];
+            $path = explode(':', $key)[1];
             $count = $this->getRedis()->get($key);
 
-            $this->getAnalyticsService()->increaseDbCount($urlId, $count);
+            $this->getAnalyticsService()->increaseDbCount($path, $count);
 
             $this->getRedis()->del($key);
         }

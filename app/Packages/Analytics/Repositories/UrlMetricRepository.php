@@ -7,17 +7,17 @@ use App\Packages\Analytics\Models\UrlMetric;
 interface UrlMetricRepository
 {
     /**
-     * @param int $urlId
+     * @param string $path
      * @return UrlMetric|null
      */
-    public function findByUrlId(int $urlId): ?UrlMetric;
+    public function findByPath(string $path): ?UrlMetric;
 
     /**
-     * @param int $urlId
+     * @param string $path
      * @param int $count
      * @return UrlMetric
      */
-    public function create(int $urlId, int $count = 0): UrlMetric;
+    public function create(string $path, int $count = 0): UrlMetric;
 
     /**
      * @param UrlMetric $metric

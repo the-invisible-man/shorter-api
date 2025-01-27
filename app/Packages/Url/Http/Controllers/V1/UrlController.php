@@ -49,6 +49,6 @@ class UrlController extends Controller
             return redirect($url->long_url, Response::HTTP_FOUND);
         }
 
-        // Return 404
+        abort(404);
     }
 }

@@ -6,7 +6,7 @@ use App\Model;
 
 /**
  * @property string $id
- * @property int $url_id
+ * @property int $path
  * @property int $count
  */
 class UrlMetric extends Model
