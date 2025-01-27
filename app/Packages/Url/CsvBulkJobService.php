@@ -19,12 +19,13 @@ class CsvBulkJobService
 
     /**
      * @param string $file
+     * @param bool $enqueue
      * @return BulkCsvJob
      * @throws MaxRowLimit
      * @throws Exception
      * @throws UnavailableStream
      */
-    public function fireBulkCsvJob(string $file): BulkCsvJob
+    public function createBulkCsvJob(string $file, bool $enqueue = true): BulkCsvJob
     {
         if (!file_exists($file)) {
             throw new \RuntimeException("File does not exist: {$file}");
@@ -39,7 +40,9 @@ class CsvBulkJobService
         $destination = $this->getDestinationPath($file);
         $job = $this->jobRepository->create($file, $destination);
 
-        dispatch(new ProcessBulkCsv($job, $file, $destination, $totalRows));
+        if ($enqueue) {
+            dispatch(new ProcessBulkCsv($job, $file, $destination, $totalRows));
+        }
 
         return $job;
     }

@@ -10,18 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        // URL DOMAIN
         Schema::create('urls', function (Blueprint $table) {
             $table->bigIncrements('id')->primary();
             $table->string('short_url', 7)->unique()->nullable();
             $table->text('long_url');
 
             $table->timestamps();
-        });
-
-        Schema::create('url_metrics', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->bigInteger('url_id')->unsigned()->index();
-            $table->integer('count')->default(0);
         });
 
         Schema::create('bulk_csv_jobs', function (Blueprint $table) {
@@ -37,6 +32,13 @@ return new class extends Migration {
             $table->string('destination_csv_path');
 
             $table->timestamps();
+        });
+
+        // ANALYTICS DOMAIN
+        Schema::create('url_metrics', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->bigInteger('url_id')->unsigned()->index();
+            $table->integer('count')->default(0);
         });
     }
 

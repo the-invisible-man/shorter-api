@@ -7,6 +7,7 @@ use App\Packages\Url\CsvBulkJobService;
 use App\Packages\Url\Exceptions\MaxRowLimit;
 use App\Packages\Url\Http\Requests\V1\CreateJob;
 use App\Packages\Url\Http\Serializers\V1\BulkCsvJobSerializer;
+use App\Packages\Url\Repositories\JobRepository;
 use App\Packages\Url\UrlService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,9 +16,12 @@ class JobController extends Controller
 {
     /**
      * @param CsvBulkJobService $service
+     * @param JobRepository $repository
      */
-    public function __construct(protected CsvBulkJobService $service)
-    {
+    public function __construct(
+        protected CsvBulkJobService $service,
+        protected JobRepository $repository
+    ) {
     }
 
     /**
@@ -35,7 +39,7 @@ class JobController extends Controller
                         ->store('csv');
 
         try {
-            $job = $this->service->fireBulkCsvJob($file);
+            $job = $this->service->createBulkCsvJob($file);
         } catch (MaxRowLimit $e) {
             $this->throwValidationException('file', 'max_row_limit', $e->getMessage());
         }
@@ -49,6 +53,25 @@ class JobController extends Controller
      */
     public function find(int $id): JsonResponse
     {
+        $job = $this->repository->find($id);
 
+        if (!$job) {
+            $this->throwNotFoundException();
+        }
+
+        return $this->itemResponse($job, new BulkCsvJobSerializer, Response::HTTP_CREATED);
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function download(int $id): JsonResponse
+    {
+        $job = $this->repository->find($id);
+
+        if (!$job) {
+            $this->throwNotFoundException();
+        }
     }
 }

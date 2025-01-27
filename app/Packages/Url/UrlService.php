@@ -4,7 +4,7 @@ namespace App\Packages\Url;
 
 use App\Packages\Url\Events\UrlVisited;
 use App\Packages\Url\Exceptions\MaxRowLimit;
-use App\Packages\Url\Jobs\FireBulkUrlCreateEvents;
+use App\Packages\Url\Jobs\BulkUrlCreated;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\Models\Url;
@@ -87,23 +87,20 @@ class UrlService
             return false;
         }
 
-        if ($result->getUrlIds()) {
-            // We've silenced all events fired by UrlWriteService::create()
-            // so that we only  fire them if the entirety  of the whole job
-            // was  successful. To finish  processing  as fast as possible,
-            // the job below  will be  queued, and when executed, will fire
-            // in a different process all the UrlCreated events we silenced.
-            //
-            // This allows us to return the results to the user as fast as
-            // possible, keeping the experience seamless, and event driven
-            dispatch(new FireBulkUrlCreateEvents($result->getUrlIds()));
-        }
-
+        // Notify the user that their CSV has been processed
         $this->jobService->updateJobStatus(
             $job->getJobRecord(),
             JobRepository::STATUS['completed'],
             $job->getTotalRows()
         );
+
+        if ($result->getUrlIds()) {
+            // We've silenced all events fired by UrlWriteService::create()
+            // so that we only  fire them if the entirety  of the whole job
+            // was  successful.  We'll now fire this higher  order event to
+            // complete the entire flow.
+            dispatch(new BulkUrlCreated($result->getUrlIds()));
+        }
 
         return true;
     }

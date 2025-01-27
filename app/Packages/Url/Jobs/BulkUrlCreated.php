@@ -6,8 +6,9 @@ use App\Packages\Url\Events\UrlCreated;
 use App\Packages\Url\Repositories\UrlRepository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Psr\Log\LoggerInterface;
 
-class FireBulkUrlCreateEvents implements ShouldQueue
+class BulkUrlCreated implements ShouldQueue
 {
     /**
      * @param array $urlIds
@@ -26,6 +27,10 @@ class FireBulkUrlCreateEvents implements ShouldQueue
 
             if ($url) {
                 $this->getEventDispatcher()->dispatch(new UrlCreated($url));
+            } else {
+                $this->getLogger()->error("Unable to fire URL created event from higher order event. URL not found", [
+                    'id' => $urlId,
+                ]);
             }
         }
     }
@@ -44,5 +49,13 @@ class FireBulkUrlCreateEvents implements ShouldQueue
     protected function getEventDispatcher(): Dispatcher
     {
         return app(Dispatcher::class);
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    protected function getLogger(): LoggerInterface
+    {
+        return app(LoggerInterface::class);
     }
 }
