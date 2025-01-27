@@ -36,6 +36,7 @@ class UrlService
         protected DatabaseManager $databaseManager,
         protected LoggerInterface $logger,
         protected JobRepository $jobRepository,
+        protected CsvBulkJobService $jobService,
     ) {
     }
 
@@ -64,7 +65,12 @@ class UrlService
     public function createFromCsv(ProcessBulkCsv $job): bool
     {
         try {
-            $this->jobRepository->update($job->getJobRecord(), JobRepository::STATUS['in-progress']);
+            $this->jobService->updateJobStatus(
+                $job->getJobRecord(),
+                JobRepository::STATUS['in-progress'],
+                0
+            );
+
             $result = $this->processCsv($job);
         } catch (\Exception $e) {
             $this->logger->error("Failed to process CSV file", [
@@ -72,7 +78,7 @@ class UrlService
                 'message' => $e->getMessage(),
                 'origin' => $job->getOrigin(),
                 'destination' => $job->getDestination(),
-                'totalRows' => $job->getTotalRows(),
+                'total_rows' => $job->getTotalRows(),
                 'raw_exception' => $e,
             ]);
 
@@ -86,14 +92,18 @@ class UrlService
             // so that we only  fire them if the entirety  of the whole job
             // was  successful. To finish  processing  as fast as possible,
             // the job below  will be  queued, and when executed, will fire
-            // all the UrlCreated events we silenced in a different process.
+            // in a different process all the UrlCreated events we silenced.
+            //
             // This allows us to return the results to the user as fast as
-            // possible, keeping experience seamless, and remaining committed
-            // to keeping the app event driven.
+            // possible, keeping the experience seamless, and event driven
             dispatch(new FireBulkUrlCreateEvents($result->getUrlIds()));
         }
 
-        $this->jobRepository->update($job->getJobRecord(), JobRepository::STATUS['completed']);
+        $this->jobService->updateJobStatus(
+            $job->getJobRecord(),
+            JobRepository::STATUS['completed'],
+            $job->getTotalRows()
+        );
 
         return true;
     }
@@ -130,6 +140,10 @@ class UrlService
                     $ids[] = $url->id;
                 } catch (\Exception $e) {
                     $failures++;
+
+                    // We will include the row, but no URL so that the user
+                    // can visually check which URLs failed so that they can
+                    // retry in a subsequent request.
                     $destination = '';
 
                     $this->logger->error("Failed to create single url in bulk create", [
@@ -149,15 +163,10 @@ class UrlService
                     $processed++;
 
                     if ($this->shouldBroadcast($processed, $job->getTotalRows(), $socketUpdateInterval)) {
-                        $this->broadcastProgress($job, $processed, $job->getTotalRows());
+                        $this->jobService->broadcastJobProgress($job->getJobRecord(), $processed);
                     }
                 }
             }
-
-            // Push that we completed the job. The file is ready to be accessed at this point.
-            // The frontend will know that the job was completed because both "processed" and
-            // "total rows" will equal each other.
-            $this->broadcastProgress($job, $processed, $job->getTotalRows());
 
             return new CsvProcessComplete($job, $processed, $failures, $ids);
         }, $maxAttempts);
@@ -220,20 +229,5 @@ class UrlService
     protected function createOutputStream(string $destination): Writer
     {
         return Writer::createFromPath($destination);
-    }
-
-    /**
-     * @param ProcessBulkCsv $job
-     * @param int $processed
-     * @param int $totalRows
-     *
-     * @return void
-     */
-    protected function broadcastProgress(ProcessBulkCsv $job, int $processed, int $totalRows): void
-    {
-        Broadcast::on("jobs.{$job->getJobId()}")->with([
-            'processed' => $processed,
-            'totalRows' => $totalRows,
-        ])->send();
     }
 }

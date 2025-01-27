@@ -6,6 +6,7 @@ use App\Packages\Url\Exceptions\MaxRowLimit;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\Repositories\JobRepository;
+use Illuminate\Support\Facades\Broadcast;
 use League\Csv\Exception;
 use League\Csv\Reader;
 use League\Csv\UnavailableStream;
@@ -41,6 +42,34 @@ class CsvBulkJobService
         dispatch(new ProcessBulkCsv($job, $file, $destination, $totalRows));
 
         return $job;
+    }
+
+    /**
+     * @param BulkCsvJob $job
+     * @param string $status
+     * @param int $processed
+     *
+     * @return void
+     */
+    public function updateJobStatus(BulkCsvJob $job, string $status, int $processed): void
+    {
+        $this->jobRepository->update($job, $status);
+        $this->broadcastJobProgress($job, $processed);
+    }
+
+    /**
+     * @param BulkCsvJob $job
+     * @param int $processed
+     *
+     * @return void
+     */
+    public function broadcastJobProgress(BulkCsvJob $job, int $processed): void
+    {
+        Broadcast::on("jobs.{$job->id}")->with([
+            'status' => $job->status,
+            'processed' => $processed,
+            'total_rows' => $job->total_rows,
+        ])->send();
     }
 
     /**
