@@ -94,7 +94,7 @@ class UrlService
     protected function processCsv(ProcessBulkCsv $job, int $maxAttempts = 3): CsvProcessComplete
     {
         return $this->databaseManager->transaction(function () use ($job) {
-            $updateInterval = $this->calculateUpdateInterval($job->getTotalRows());
+            $socketUpdateInterval = $this->calculateUpdateInterval($job->getTotalRows());
             $outputFile = $this->createOutputStream($job->getDestination());
 
             $ids = [];
@@ -134,7 +134,7 @@ class UrlService
 
                     $processed++;
 
-                    if ($this->shouldBroadcast($processed, $job->getTotalRows(), $updateInterval)) {
+                    if ($this->shouldBroadcast($processed, $job->getTotalRows(), $socketUpdateInterval)) {
                         $this->broadcastProgress($processed, $job->getTotalRows());
                     }
                 }

@@ -45,7 +45,7 @@ class UrlWriteService
             $url = $this->repository->create($longUrl);
 
             $seed = $this->calcPathSeedValue($url->id);
-            $path = $this->encodeBase62($seed);
+            $path = $this->toBase62($seed);
 
             $this->repository->update($url, $path);
 
@@ -79,7 +79,7 @@ class UrlWriteService
      * @param int $seed
      * @return string
      */
-    protected function encodeBase62(int $seed): string
+    protected function toBase62(int $seed): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $base = strlen($characters);
