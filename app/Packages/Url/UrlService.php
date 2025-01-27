@@ -3,17 +3,13 @@
 namespace App\Packages\Url;
 
 use App\Packages\Url\Events\UrlVisited;
-use App\Packages\Url\Exceptions\MaxRowLimit;
 use App\Packages\Url\Jobs\BulkUrlCreated;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
-use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\Models\Url;
 use App\Packages\Url\Repositories\JobRepository;
 use App\Packages\Url\Structs\CsvProcessComplete;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Contracts\Events\Dispatcher;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use Psr\Log\LoggerInterface;
@@ -28,6 +24,7 @@ class UrlService
      * @param DatabaseManager $databaseManager
      * @param LoggerInterface $logger
      * @param JobRepository $jobRepository
+     * @param CsvBulkJobService $jobService
      */
     public function __construct(
         protected UrlReadService $urlReadService,

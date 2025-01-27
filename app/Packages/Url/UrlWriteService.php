@@ -8,7 +8,7 @@ use App\Packages\Url\Repositories\UrlRepository;
 use App\Packages\Url\Traits\CachesUrls;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
 
 class UrlWriteService
@@ -69,7 +69,19 @@ class UrlWriteService
      */
     protected function calcPathSeedValue(int $id): int
     {
-
+        // We need to start from at least this number to generate
+        // base62 values that will be 7 characters in length.
+        // The real number is 56,800,235,584, but that gives
+        // us a base62 value of "1000000" which looks kinda
+        // weird (esthetically). So for demo purposes, we're
+        // starting even higher, so we can get something more
+        // like a "100gMAd" type of url path.
+        //
+        // Another very important caveat about this operation is
+        // that to reach the highest possible base62 value, which
+        // will be "ZZZZZZZ", we need to run our application in
+        // a 64-bit operating system to avoid an integer overflow.
+        return 56804235589 + $id;
     }
 
     /**

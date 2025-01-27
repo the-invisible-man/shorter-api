@@ -2,27 +2,31 @@
 
 namespace App\Packages\Url;
 
+use App\Packages\Url\Exceptions\InvalidUrlException;
 use App\Packages\Url\Exceptions\MaxRowLimit;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\Repositories\JobRepository;
-use Illuminate\Support\Facades\Broadcast;
 use League\Csv\Exception;
 use League\Csv\Reader;
 use League\Csv\UnavailableStream;
+use Illuminate\Contracts\Broadcasting\Broadcaster;
 
 class CsvBulkJobService
 {
-    public function __construct(protected JobRepository $jobRepository)
-    {
+    public function __construct(
+        protected JobRepository $jobRepository,
+        protected Broadcaster $broadcaster
+    ) {
     }
 
     /**
      * @param string $file
      * @param bool $enqueue
      * @return BulkCsvJob
-     * @throws MaxRowLimit
      * @throws Exception
+     * @throws InvalidUrlException
+     * @throws MaxRowLimit
      * @throws UnavailableStream
      */
     public function createBulkCsvJob(string $file, bool $enqueue = true): BulkCsvJob
@@ -33,11 +37,9 @@ class CsvBulkJobService
 
         $rowLimit = config('services')[CsvBulkJobService::class]['max_row_limit'];
 
-        if (($totalRows = $this->getTotalRows($file, $rowLimit)) === false) {
-            throw new MaxRowLimit("The CSV exceeds the row limit of {$rowLimit}. Maximum rows exceeded.");
-        }
-
+        $totalRows = $this->validateCsv($file, $rowLimit);
         $destination = $this->getDestinationPath($file);
+
         $job = $this->jobRepository->create($file, $destination);
 
         if ($enqueue) {
@@ -68,21 +70,23 @@ class CsvBulkJobService
      */
     public function broadcastJobProgress(BulkCsvJob $job, int $processed): void
     {
-        Broadcast::on("jobs.{$job->id}")->with([
+        $this->broadcaster->broadcast(["jobs.{$job->id}"], 'job.progress', [
             'status' => $job->status,
             'processed' => $processed,
             'total_rows' => $job->total_rows,
-        ])->send();
+        ]);
     }
 
     /**
      * @param string $file
      * @param int $limit
-     * @return bool
-     * @throws \League\Csv\Exception
-     * @throws \League\Csv\UnavailableStream
+     * @return int
+     * @throws Exception
+     * @throws InvalidUrlException
+     * @throws MaxRowLimit
+     * @throws UnavailableStream
      */
-    protected function getTotalRows(string $file, int $limit): bool
+    protected function validateCsv(string $file, int $limit): int
     {
         $total = 0;
 
@@ -91,12 +95,28 @@ class CsvBulkJobService
         foreach ($csv->getRecords() as $record) {
             $total++;
 
+            // We have to iterate through all rows so that we can determine
+            // if the file exceeds the max rows we allow per job, so while
+            // we're at it, we'll also check that each URL is valid.
+            if (!$this->isValidUrl($record[0])){
+                throw new InvalidUrlException($record[0]);
+            }
+
             if ($total > $limit) {
-                return false;
+                throw new MaxRowLimit("The CSV exceeds the row limit of {$limit}.");
             }
         }
 
         return $total;
+    }
+
+    /**
+     * @param string $url
+     * @return bool
+     */
+    protected function isValidUrl(string $url): bool
+    {
+        return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
     /**

@@ -11,6 +11,12 @@ use App\Model;
  */
 class Url extends Model
 {
+    public bool $shouldUseUuidId = false;
+
+    public $incrementing = true;
+
+    public $keyType = 'int';
+
     /**
      * @return array
      */

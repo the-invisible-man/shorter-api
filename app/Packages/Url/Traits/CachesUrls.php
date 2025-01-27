@@ -36,7 +36,7 @@ trait CachesUrls
     protected function cacheUrl(Url $url): void
     {
         try {
-            $this->getCache()->set($this->makeCacheKey($url->short_url), $url->toCache(), config('cache.ttl'));
+            $this->getCache()->set($this->makeCacheKey($url->short_url), $url->toCache(), config('cache.url_cache_ttl'));
         } catch (\Exception $e) {
             $this->getLogger()->error("There was an error puting URL in cache", [
                 'path' => $url->short_url,

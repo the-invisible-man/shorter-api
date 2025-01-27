@@ -18,7 +18,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Http\V1\Controllers';
+    protected $namespace = '';
 
     /**
      * The path to your application's "home" route.
@@ -46,21 +46,19 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes(): void
     {
-        Route::group([
-            'namespace' => $this->namespace,
-        ], function () {
-            $this->mapAnalyticsAPIRoutes();
+        Route::group([], function () {
             $this->mapShorteningAPIRoutes();
+            $this->mapAnalyticsAPIRoutes();
             $this->mapAccessAPIRoutes();
         });
     }
 
     protected function mapShorteningAPIRoutes(): void
     {
-        Route::group(['as' => 'v1::', 'prefix' => 'shorten/v1'], function (Router $router) {
+        Route::group(['as' => 'shorten::v1::', 'prefix' => 'shorten/v1'], function (Router $router) {
             $router->group(['prefix' => 'urls'], function (Router $router) {
                 $router->post('/', ['as' => 'urls.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\UrlController@create']);
-                $router->post('bulk', ['as' => 'urls.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\UrlController@bulkCreate']);
+                $router->post('jobs', ['as' => 'urls.jobs.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\JobController@create']);
             });
         });
     }

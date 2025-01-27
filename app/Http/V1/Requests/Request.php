@@ -27,7 +27,7 @@ class Request extends BaseRequest
     /**
      * Get the data for the controller.
      */
-    public function data(): array
+    public function getValidated(): array
     {
         return array_intersect_key($this->transform(), $this->all()) + $this->defaults();
     }

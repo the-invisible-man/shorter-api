@@ -4,11 +4,11 @@ namespace App\Packages\Url\Http\Controllers\V1;
 
 use App\Http\V1\Controllers\Controller;
 use App\Packages\Url\CsvBulkJobService;
+use App\Packages\Url\Exceptions\InvalidUrlException;
 use App\Packages\Url\Exceptions\MaxRowLimit;
 use App\Packages\Url\Http\Requests\V1\CreateJob;
 use App\Packages\Url\Http\Serializers\V1\BulkCsvJobSerializer;
 use App\Packages\Url\Repositories\JobRepository;
-use App\Packages\Url\UrlService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,21 +39,23 @@ class JobController extends Controller
                         ->store('csv');
 
         try {
-            $job = $this->service->createBulkCsvJob($file);
+            $job = $this->service->createBulkCsvJob(storage_path("app/{$file}"));
         } catch (MaxRowLimit $e) {
             $this->throwValidationException('file', 'max_row_limit', $e->getMessage());
+        } catch (InvalidUrlException $e) {
+            $this->throwValidationException('file', 'invalid_url', "The URL \"{$e->getMessage()}\" is invalid.");
         }
 
         return $this->itemResponse($job, new BulkCsvJobSerializer, Response::HTTP_CREATED);
     }
 
     /**
-     * @param int $id
+     * @param int $jobId
      * @return JsonResponse
      */
-    public function find(int $id): JsonResponse
+    public function find(int $jobId): JsonResponse
     {
-        $job = $this->repository->find($id);
+        $job = $this->repository->find($jobId);
 
         if (!$job) {
             $this->throwNotFoundException();
@@ -63,12 +65,12 @@ class JobController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param int $jobId
      * @return JsonResponse
      */
-    public function download(int $id): JsonResponse
+    public function download(int $jobId): JsonResponse
     {
-        $job = $this->repository->find($id);
+        $job = $this->repository->find($jobId);
 
         if (!$job) {
             $this->throwNotFoundException();
