@@ -31,6 +31,9 @@ class JobControllerTest extends TestCase
         Bus::assertDispatched(function (ProcessBulkCsv $job) {
             self::assertInstanceOf(BulkCsvJob::class, $job->getJobRecord());
             self::assertEquals('pending', $job->getJobRecord()->status);
+            self::assertEquals(9, $job->getTotalRows());
+            self::assertTrue(str_contains($job->getDestination(), 'storage/app/processed/'), 'Failed to assert destination CSV');
+            self::assertTrue(str_contains($job->getOrigin(), 'storage/app/csv/'), 'Failed to assert origin CSV');
 
             return true;
         });
