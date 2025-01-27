@@ -59,6 +59,9 @@ class RouteServiceProvider extends ServiceProvider
             $router->group(['prefix' => 'urls'], function (Router $router) {
                 $router->post('/', ['as' => 'urls.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\UrlController@create']);
                 $router->post('jobs', ['as' => 'urls.jobs.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\JobController@create']);
+
+                $router->get('/jobs/download/{id}', ['as' => 'urls.jobs.download', 'uses' => '\App\Packages\Url\Http\Controllers\V1\JobController@download']);
+                $router->get('jobs/{id}', ['as' => 'urls.jobs.find', 'uses' => '\App\Packages\Url\Http\Controllers\V1\JobController@find']);
             });
         });
     }
