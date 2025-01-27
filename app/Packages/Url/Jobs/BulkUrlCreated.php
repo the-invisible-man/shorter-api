@@ -22,7 +22,7 @@ class BulkUrlCreated implements ShouldQueue
      */
     public function handle(): void
     {
-        foreach ($this->urlIds as $urlId) {
+        foreach ($this->getUrlIds() as $urlId) {
             $url = $this->getRepository()->find($urlId);
 
             if ($url) {
@@ -33,6 +33,14 @@ class BulkUrlCreated implements ShouldQueue
                 ]);
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getUrlIds(): array
+    {
+        return $this->urlIds;
     }
 
     /**

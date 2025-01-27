@@ -40,7 +40,7 @@ class CsvBulkJobService
         $totalRows = $this->validateCsv($file, $rowLimit);
         $destination = $this->getDestinationPath($file);
 
-        $job = $this->jobRepository->create($file, $destination);
+        $job = $this->jobRepository->create($file, $destination, $totalRows);
 
         if ($enqueue) {
             dispatch(new ProcessBulkCsv($job, $file, $destination, $totalRows));

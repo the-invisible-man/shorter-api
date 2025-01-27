@@ -16,10 +16,11 @@ interface JobRepository
     /**
      * @param string $original_csv_path
      * @param string $destination_csv_path
+     * @param int $totalRows
      * @param string $status
      * @return BulkCsvJob
      */
-    public function create(string $original_csv_path, string $destination_csv_path, string $status = self::STATUS['pending']): BulkCsvJob;
+    public function create(string $original_csv_path, string $destination_csv_path, int $totalRows, string $status = self::STATUS['pending']): BulkCsvJob;
 
     /**
      * @param int $id

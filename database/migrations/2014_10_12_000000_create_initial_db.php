@@ -30,6 +30,7 @@ return new class extends Migration {
 
             $table->string('original_csv_path');
             $table->string('destination_csv_path');
+            $table->integer('total_rows')->unsigned();
 
             $table->timestamps();
         });

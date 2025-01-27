@@ -56,10 +56,10 @@ class UrlService
 
     /**
      * @param ProcessBulkCsv $job
-     * @return bool
+     * @return CsvProcessComplete|null
      * @throws \Throwable
      */
-    public function createFromCsv(ProcessBulkCsv $job): bool
+    public function createFromCsv(ProcessBulkCsv $job): ?CsvProcessComplete
     {
         try {
             $this->jobService->updateJobStatus(
@@ -81,7 +81,7 @@ class UrlService
 
             $this->jobRepository->update($job->getJobRecord(), JobRepository::STATUS['failed']);
 
-            return false;
+            return null;
         }
 
         // Notify the user that their CSV has been processed
@@ -99,7 +99,7 @@ class UrlService
             dispatch(new BulkUrlCreated($result->getUrlIds()));
         }
 
-        return true;
+        return $result;
     }
 
     /**
@@ -222,6 +222,6 @@ class UrlService
      */
     protected function createOutputStream(string $destination): Writer
     {
-        return Writer::createFromPath($destination);
+        return Writer::createFromPath($destination, 'w+');
     }
 }
