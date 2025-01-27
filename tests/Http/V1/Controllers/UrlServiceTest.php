@@ -138,7 +138,6 @@ class UrlServiceTest extends TestCase
 
         Bus::assertDispatched(function (BulkUrlCreated $higherOrderEvent) {
             self::assertCount(9, $higherOrderEvent->getUrlIds());
-
             return true;
         });
 
@@ -146,5 +145,10 @@ class UrlServiceTest extends TestCase
 
         self::assertEquals(9, $result->getTotalProcessed());
         self::assertEquals(0, $result->getTotalFailures());
+    }
+
+    public function testVisitUrl(): void
+    {
+
     }
 }

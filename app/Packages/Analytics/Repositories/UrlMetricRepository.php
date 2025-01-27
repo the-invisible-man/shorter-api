@@ -21,8 +21,8 @@ interface UrlMetricRepository
 
     /**
      * @param UrlMetric $metric
-     * @param int $increment
+     * @param int $incrementBy
      * @return void
      */
-    public function atomicIncrement(UrlMetric $metric, int $increment): void;
+    public function atomicIncrement(UrlMetric $metric, int $incrementBy): void;
 }
