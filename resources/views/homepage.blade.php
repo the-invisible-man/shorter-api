@@ -168,7 +168,7 @@
         <button onclick="uploadCsv()">Upload CSV</button>
     </div>
 
-    <div class="progress-bar-container">
+    <div class="progress-bar-container" id="progressBarContainer">
         <div class="progress-bar">
             <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
