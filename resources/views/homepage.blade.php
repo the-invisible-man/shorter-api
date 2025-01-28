@@ -298,7 +298,9 @@
                 progressBarText.textContent = `${Math.round(progress)}%`;
             }
 
-            if (status === 'failed') {
+            if (status === 'completed') {
+                downloadFile(jobId);
+            } else if (status === 'failed') {
                 alert('CSV processing failed. Please try again.');
             }
         });
@@ -307,6 +309,16 @@
     function showProgressBar() {
         const progressBarContainer = document.getElementById('progressBarContainer');
         progressBarContainer.style.display = 'block';
+    }
+
+    function downloadFile(jobId) {
+        const url = `/shorten/v1/urls/jobs/download/${jobId}`;
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = `job_${jobId}_output.csv`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
     }
 </script>
 </body>
