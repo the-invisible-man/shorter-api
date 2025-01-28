@@ -17,6 +17,11 @@ You can use the CSV in: https://github.com/the-invisible-man/shorter-api/blob/ma
 
 **NOTE:** The frontend has been quickly put together with HTML and vanilla JS. It can be unstable, therefore you should refresh the page whenever attempting to resubmit a flow.
 
+## How to Explore the Code
+Everything lives in the `/app/Packages` directory. There are two business domains: `Url` and `Analytics`, and each of the own everything from their service classes, controllers, validation, requests, serializers, etc.
+
+You can find the API routes at `RouteServiceProvider`.
+
 ## Overview
 This API was built with two guiding principles: high availability, and very low latency. This was achieved by making deliberate decisions about everything from the technologies used, to the code architecture.
 
