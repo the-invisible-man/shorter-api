@@ -9,7 +9,7 @@ class CreateJob extends Request
     public function rules(): array
     {
         return [
-            'file' => 'required|mimes:csv|max:2048',
+            'file' => 'required|mimetypes:text/csv,text/plain,application/csv|max:2048',
         ];
     }
 }
