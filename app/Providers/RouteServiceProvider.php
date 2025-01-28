@@ -68,8 +68,8 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function mapAccessAPIRoutes(): void
     {
-        Route::group(['as' => 'v1::router', 'prefix' => '/'], function (Router $router) {
-            $router->get('/', ['as' => 'router.route', 'uses' => 'RouterController@route']);
+        Route::group(['as' => 'v1::router::', 'prefix' => 'r'], function (Router $router) {
+            $router->get('{path}', ['as' => 'route', 'uses' => '\App\Packages\Url\Http\Controllers\V1\UrlController@route']);
         });
     }
 

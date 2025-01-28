@@ -3,6 +3,8 @@
 namespace Http\V1\Controllers;
 
 use App\Packages\Url\Events\UrlCreated;
+use App\Packages\Url\Models\Url;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Psr\SimpleCache\CacheInterface;
 use Tests\TestCase;
@@ -47,5 +49,25 @@ class UrlControllerTest extends TestCase
             'long_url' => $longUrl,
             'short_url' => '100gMAe',
         ]);
+    }
+
+    public function testRouteFound(): void
+    {
+        Event::fake();
+
+        $this->createUrl('https://www.wemod.com/features', 'ndf8nq3');
+
+        $response = $this->call('GET', route('v1::router::route', ['path' => 'ndf8nq3']));
+
+        $response->assertStatus(Response::HTTP_FOUND);
+    }
+
+    public function testRouteNotFound(): void
+    {
+        Event::fake();
+
+        $response = $this->call('GET', route('v1::router::route', ['path' => 'ndf8nq3']));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 }
