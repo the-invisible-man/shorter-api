@@ -117,6 +117,31 @@
         .copied-message.visible {
             opacity: 1;
         }
+
+        .progress-bar-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: #1e3c5a;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 10px 0;
+            height: 20px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #3fa9f5;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status {
+            font-size: 1em;
+        }
     </style>
 </head>
 <body>
@@ -140,8 +165,16 @@
         <input type="file" id="csvFile" accept=".csv">
         <button onclick="uploadCsv()">Upload CSV</button>
     </div>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="status" id="status">Status: Pending</div>
+    </div>
 </div>
 
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 <script>
     async function shortenUrl() {
         const longUrl = document.getElementById('longUrl').value;
@@ -194,7 +227,8 @@
                 throw new Error(error.message || 'Failed to upload CSV file.');
             }
 
-            alert('CSV file uploaded successfully!');
+            const data = await response.json();
+            subscribeToJobUpdates(data.data.id);
         } catch (error) {
             alert(`Error: ${error.message}`);
         }
@@ -218,6 +252,37 @@
         }).catch(err => {
             alert('Failed to copy to clipboard.');
             console.error(err);
+        });
+    }
+
+    function subscribeToJobUpdates(jobId) {
+        const pusher = new Pusher('69537eb215d61df4074a', {
+            cluster: 'mt1',
+            encrypted: true
+        });
+
+        const channel = pusher.subscribe(`jobs.${jobId}`);
+
+        channel.bind('job.progress', function(data) {
+            const { status, processed, total_rows } = data;
+
+            const statusElement = document.getElementById('status');
+            const progressBarFill = document.getElementById('progressBarFill');
+
+            // Update status
+            statusElement.textContent = `Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+
+            // Update progress bar
+            if (status === 'in-progress' || status === 'completed') {
+                const progress = (processed / total_rows) * 100;
+                progressBarFill.style.width = `${progress}%`;
+            }
+
+            if (status === 'completed') {
+                alert('CSV processing completed successfully!');
+            } else if (status === 'failed') {
+                alert('CSV processing failed. Please try again.');
+            }
         });
     }
 </script>
