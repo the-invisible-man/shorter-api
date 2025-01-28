@@ -28,7 +28,7 @@ class FlushUrlCount extends Command
 
         foreach ($keys as $key) {
             $path = explode(':', $key)[1];
-            $count = $this->getRedis()->get($key);
+            $count = (int)$this->getRedis()->get($key);
 
             $this->getAnalyticsService()->increaseDbCount($path, $count);
 
