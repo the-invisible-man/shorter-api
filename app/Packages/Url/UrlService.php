@@ -183,7 +183,7 @@ class UrlService
      */
     protected function calculateUpdateInterval(int $totalRows): int
     {
-        // If the file is more than 20 rows, then we put a
+        // If the file is more than 100 rows, then we put a
         // buffer on the update interval by dividing the total
         // rows into 20 chunks. This way we'll only broadcast
         // at most 20 events, keeping the broadcasting lightweight.
