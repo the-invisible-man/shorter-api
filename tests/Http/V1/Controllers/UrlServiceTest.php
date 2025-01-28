@@ -146,9 +146,4 @@ class UrlServiceTest extends TestCase
         self::assertEquals(9, $result->getTotalProcessed());
         self::assertEquals(0, $result->getTotalFailures());
     }
-
-    public function testVisitUrl(): void
-    {
-
-    }
 }
