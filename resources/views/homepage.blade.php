@@ -86,6 +86,24 @@
             display: block;
             margin: 10px 0;
         }
+
+        .short-url {
+            margin-top: 20px;
+            padding: 10px;
+            background: #1e3c5a;
+            border-radius: 8px;
+            font-size: 1.5em;
+            text-align: center;
+            color: #3fa9f5;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .short-url.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -94,6 +112,8 @@
 
     <input type="text" id="longUrl" placeholder="Enter a long URL here...">
     <button onclick="shortenUrl()">Shorten URL</button>
+
+    <div id="shortUrlDisplay" class="short-url"></div>
 
     <div class="csv-upload">
         <div class="instructions">
@@ -131,8 +151,7 @@
             }
 
             const data = await response.json();
-            console.log(data);
-            // alert(`Shortened URL: ${data.short_url}`);
+            revealShortUrl(data.data.short_url);
         } catch (error) {
             alert(`Error: ${error.message}`);
         }
@@ -155,6 +174,12 @@
         };
 
         reader.readAsText(file);
+    }
+
+    function revealShortUrl(shortUrl) {
+        const shortUrlDisplay = document.getElementById('shortUrlDisplay');
+        shortUrlDisplay.textContent = `Shortened URL: ${shortUrl}`;
+        shortUrlDisplay.classList.add('visible');
     }
 </script>
 </body>
