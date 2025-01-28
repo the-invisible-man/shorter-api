@@ -120,7 +120,12 @@ URL redirection is pretty straightforward. Check the cache for the url given the
 
 Additionally, all redirects return a `302` status code as opposed to `301`. The reason being that a `301` will make browsers skip the ShortLink hop and go directly to the long url, and this will impact analytics reporting.
 
+![Shorter (Diagrams) - Redirection](https://github.com/user-attachments/assets/8c8d1335-63ed-4f75-b1f2-45bce187b592)
+
 ### Analytics Tracking
 The Analytics domain listens to `UrlVisited` events to track all visits. For each visit, a counter is increased in Redis for that one visit. ShortLink uses Redis to track visits due to its ability to handle large throughput with minimal overhead. This gets the user to their destination faster than if we wrote to the DB on every visit.
 
 Every minute, a cron job that flushes the redis counts runs, and updates the URL metrics to the DB, where it is then available for reading. This makes the analytics eventually consistent at a slight delay of 1 minute. Additionally, this keeps the database from becoming overwhelmed during high traffic since thousands of URL visits in a single minute would only result in a few database writes.
+
+![Shorter (Diagrams) - Analytics](https://github.com/user-attachments/assets/fc21d852-866a-473c-9215-649b1cacc99b)
+
