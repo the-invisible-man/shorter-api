@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="" alt="ShortLink Logo" width="200" />
+  <img src="https://raw.githubusercontent.com/the-invisible-man/shorter-api/refs/heads/main/public/img/logo.webp" alt="ShortLink Logo" width="200" />
   <h1>ShortLink</h1>
 </div>
 
