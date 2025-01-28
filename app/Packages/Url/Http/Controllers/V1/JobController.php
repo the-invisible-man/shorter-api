@@ -17,7 +17,7 @@ class JobController extends Controller
 {
     /**
      * @param CsvBulkJobService $service
-     * @param JobRepository $repository
+     * @param JobRepository     $repository
      */
     public function __construct(
         protected CsvBulkJobService $service,
@@ -27,10 +27,12 @@ class JobController extends Controller
 
     /**
      * @param CreateJob $request
-     * @return JsonResponse
+     *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \League\Csv\Exception
      * @throws \League\Csv\UnavailableStream
+     *
+     * @return JsonResponse
      */
     public function create(CreateJob $request): JsonResponse
     {
@@ -52,13 +54,14 @@ class JobController extends Controller
 
     /**
      * @param int $jobId
+     *
      * @return JsonResponse
      */
     public function find(int $jobId): JsonResponse
     {
         $job = $this->repository->find($jobId);
 
-        if (!$job) {
+        if (! $job) {
             $this->throwNotFoundException();
         }
 
@@ -67,13 +70,14 @@ class JobController extends Controller
 
     /**
      * @param string $jobId
+     *
      * @return StreamedResponse
      */
     public function download(string $jobId): StreamedResponse
     {
         $job = $this->repository->find($jobId);
 
-        if (!$job) {
+        if (! $job) {
             $this->throwNotFoundException();
         }
 

@@ -18,11 +18,12 @@ class AnalyticsController extends Controller
 
     /**
      * @param string $path
+     *
      * @return JsonResponse
      */
     public function find(string $path): JsonResponse
     {
-        if (!($path = $this->repository->findByPath($path))) {
+        if (! ($path = $this->repository->findByPath($path))) {
             return $this->response([], Response::HTTP_NOT_FOUND);
         }
 

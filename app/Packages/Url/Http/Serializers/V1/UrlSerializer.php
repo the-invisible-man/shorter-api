@@ -8,9 +8,9 @@ use App\Packages\Url\Models\Url;
 
 class UrlSerializer extends Serializer
 {
-
     /**
      * @param Model|Url $model
+     *
      * @return array
      */
     public function serialize(Model|Url $model): array

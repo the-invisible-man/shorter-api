@@ -23,9 +23,11 @@ class UrlController extends Controller
 
     /**
      * @param CreateUrl $request
-     * @return JsonResponse
+     *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Throwable
+     *
+     * @return JsonResponse
      */
     public function create(CreateUrl $request): JsonResponse
     {
@@ -40,8 +42,10 @@ class UrlController extends Controller
 
     /**
      * @param string $path
-     * @return RedirectResponse
+     *
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return RedirectResponse
      */
     public function route(string $path): RedirectResponse
     {

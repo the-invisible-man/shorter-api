@@ -6,20 +6,20 @@ use App\Packages\Url\Events\UrlCreated;
 use App\Packages\Url\Models\Url;
 use App\Packages\Url\Repositories\UrlRepository;
 use App\Packages\Url\Traits\CachesUrls;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\DatabaseManager;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class UrlWriteService
 {
     use CachesUrls;
 
     /**
-     * @param UrlRepository $repository
-     * @param CacheInterface $cache
+     * @param UrlRepository   $repository
+     * @param CacheInterface  $cache
      * @param LoggerInterface $logger
-     * @param Dispatcher $dispatcher
+     * @param Dispatcher      $dispatcher
      * @param DatabaseManager $databaseManager
      */
     public function __construct(
@@ -34,10 +34,12 @@ class UrlWriteService
 
     /**
      * @param string $longUrl
-     * @param bool $shouldCache
-     * @param bool $shouldDispatchEvent
-     * @return Url
+     * @param bool   $shouldCache
+     * @param bool   $shouldDispatchEvent
+     *
      * @throws \Throwable
+     *
+     * @return Url
      */
     public function create(string $longUrl, bool $shouldCache = true, bool $shouldDispatchEvent = true): Url
     {
@@ -65,6 +67,7 @@ class UrlWriteService
 
     /**
      * @param int $id
+     *
      * @return int
      */
     protected function calcPathSeedValue(int $id): int
@@ -89,6 +92,7 @@ class UrlWriteService
      * characters given an integer seed.
      *
      * @param int $seed
+     *
      * @return string
      */
     protected function toBase62(int $seed): string
@@ -99,7 +103,7 @@ class UrlWriteService
 
         while ($seed > 0) {
             $remainder = $seed % $base;
-            $result = $characters[$remainder] . $result;
+            $result = $characters[$remainder].$result;
             $seed = intdiv($seed, $base);
         }
 

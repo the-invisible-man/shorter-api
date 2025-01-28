@@ -14,8 +14,8 @@ class UrlReadService
     use CachesUrls;
 
     /**
-     * @param UrlRepository $repository
-     * @param CacheInterface $cache
+     * @param UrlRepository   $repository
+     * @param CacheInterface  $cache
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -28,8 +28,9 @@ class UrlReadService
     /**
      * @param string $path
      *
-     * @return Url|null
      * @throws InvalidArgumentException
+     *
+     * @return Url|null
      */
     public function findByShortUrl(string $path): ?Url
     {
@@ -52,9 +53,9 @@ class UrlReadService
      * @param string $key
      * @param string $path
      *
-     * @return Url|null
-     *
      * @throws \Psr\SimpleCache\InvalidArgumentException
+     *
+     * @return Url|null
      */
     protected function fetchFromCache(string $key, string $path): ?Url
     {
@@ -63,7 +64,7 @@ class UrlReadService
                 return $this->repository->hydrateFromCache($data);
             }
         } catch (\Exception $e) {
-            $this->logger->error("There was an error fetching URL from cache", [
+            $this->logger->error('There was an error fetching URL from cache', [
                 'key' => $key,
                 'message' => $e->getMessage(),
                 'exception' => $e,
@@ -74,7 +75,7 @@ class UrlReadService
 
         // Using "debug" instead to avoid overwhelming the logs
         // during high traffic and a large number of urls.
-        $this->logger->debug("Cache miss", [
+        $this->logger->debug('Cache miss', [
             'path' => $path,
         ]);
 

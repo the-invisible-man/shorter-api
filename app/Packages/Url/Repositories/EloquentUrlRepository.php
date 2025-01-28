@@ -3,12 +3,12 @@
 namespace App\Packages\Url\Repositories;
 
 use App\Packages\Url\Models\Url;
-use Carbon\Carbon;
 
 class EloquentUrlRepository implements UrlRepository
 {
     /**
      * @param string $shortUrl
+     *
      * @return Url|null
      */
     public function findByShortUrl(string $shortUrl): ?Url
@@ -18,6 +18,7 @@ class EloquentUrlRepository implements UrlRepository
 
     /**
      * @param int $id
+     *
      * @return Url|null
      */
     public function find(int $id): ?Url
@@ -26,8 +27,9 @@ class EloquentUrlRepository implements UrlRepository
     }
 
     /**
-     * @param string $longUrl
+     * @param string      $longUrl
      * @param string|null $shortUrl
+     *
      * @return Url
      */
     public function create(string $longUrl, string $shortUrl = null): Url
@@ -43,9 +45,8 @@ class EloquentUrlRepository implements UrlRepository
     }
 
     /**
-     * @param Url $url
+     * @param Url    $url
      * @param string $shortUrl
-     * @return void
      */
     public function update(Url $url, string $shortUrl): void
     {
@@ -55,6 +56,7 @@ class EloquentUrlRepository implements UrlRepository
 
     /**
      * @param array $data
+     *
      * @return Url
      */
     public function hydrateFromCache(array $data): Url

@@ -18,7 +18,6 @@ class FlushUrlCount extends Command
     protected $description = 'Sync Redis URL visit counter to the DB.';
 
     /**
-     * @return void
      * @throws \RedisException
      */
     public function handle(): void

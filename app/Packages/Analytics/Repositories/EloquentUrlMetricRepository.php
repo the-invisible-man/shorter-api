@@ -8,6 +8,7 @@ class EloquentUrlMetricRepository implements UrlMetricRepository
 {
     /**
      * @param int $urlId
+     *
      * @return UrlMetric|null
      */
     public function findByUrlId(int $urlId): ?UrlMetric
@@ -17,6 +18,7 @@ class EloquentUrlMetricRepository implements UrlMetricRepository
 
     /**
      * @param string $path
+     *
      * @return UrlMetric|null
      */
     public function findByPath(string $path): ?UrlMetric
@@ -26,7 +28,8 @@ class EloquentUrlMetricRepository implements UrlMetricRepository
 
     /**
      * @param string $path
-     * @param int $count
+     * @param int    $count
+     *
      * @return UrlMetric
      */
     public function create(string $path, int $count = 0): UrlMetric
@@ -43,8 +46,7 @@ class EloquentUrlMetricRepository implements UrlMetricRepository
 
     /**
      * @param UrlMetric $metric
-     * @param int $incrementBy
-     * @return void
+     * @param int       $incrementBy
      */
     public function atomicIncrement(UrlMetric $metric, int $incrementBy): void
     {

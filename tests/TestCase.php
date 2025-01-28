@@ -17,6 +17,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param string $longUrl
      * @param string $shortUrl
+     *
      * @return Url
      */
     protected function createUrl(string $longUrl, string $shortUrl): Url
@@ -34,8 +35,9 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param string $original_csv_path
      * @param string $destination_csv_path
-     * @param int $totalRows
+     * @param int    $totalRows
      * @param string $status
+     *
      * @return BulkCsvJob
      */
     protected function createJob(
@@ -43,8 +45,7 @@ abstract class TestCase extends BaseTestCase
         string $destination_csv_path,
         int $totalRows,
         string $status = JobRepository::STATUS['pending']
-    ): BulkCsvJob
-    {
+    ): BulkCsvJob {
         $job = new BulkCsvJob;
 
         $job->original_csv_path = $original_csv_path;
@@ -59,7 +60,8 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * @param string $path
-     * @param int $count
+     * @param int    $count
+     *
      * @return UrlMetric
      */
     protected function createMetric(string $path, int $count): UrlMetric

@@ -17,9 +17,6 @@ class BulkUrlCreated implements ShouldQueue
     {
     }
 
-    /**
-     * @return void
-     */
     public function handle(): void
     {
         foreach ($this->getUrlIds() as $urlId) {
@@ -28,7 +25,7 @@ class BulkUrlCreated implements ShouldQueue
             if ($url) {
                 $this->getEventDispatcher()->dispatch(new UrlCreated($url));
             } else {
-                $this->getLogger()->error("Unable to fire URL created event from higher order event. URL not found", [
+                $this->getLogger()->error('Unable to fire URL created event from higher order event. URL not found', [
                     'id' => $urlId,
                 ]);
             }

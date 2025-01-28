@@ -10,6 +10,7 @@ class UrlMetricSerializer extends Serializer
 {
     /**
      * @param Model|UrlMetric $model
+     *
      * @return array
      */
     public function serialize(Model|UrlMetric $model): array

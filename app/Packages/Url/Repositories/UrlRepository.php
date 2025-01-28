@@ -15,6 +15,7 @@ interface UrlRepository
 
     /**
      * @param int $id
+     *
      * @return Url|null
      */
     public function find(int $id): ?Url;
@@ -27,10 +28,8 @@ interface UrlRepository
     public function create(string $longUrl): Url;
 
     /**
-     * @param Url $url
+     * @param Url    $url
      * @param string $shortUrl
-     *
-     * @return void
      */
     public function update(Url $url, string $shortUrl): void;
 

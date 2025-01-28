@@ -3,12 +3,11 @@
 namespace Http\V1\Controllers;
 
 use App\Packages\Url\Events\UrlCreated;
-use App\Packages\Url\Models\Url;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
+use Mockery as m;
 use Psr\SimpleCache\CacheInterface;
 use Tests\TestCase;
-use Mockery as m;
 
 class UrlControllerTest extends TestCase
 {
@@ -16,13 +15,13 @@ class UrlControllerTest extends TestCase
     {
         Event::fake();
 
-        $longUrl = "https://stackoverflow.com/questions/45794683/how-to-create-aliases-in-laravel";
+        $longUrl = 'https://stackoverflow.com/questions/45794683/how-to-create-aliases-in-laravel';
 
         $cacheMock = m::mock(CacheInterface::class);
 
         $cacheMock->shouldReceive('set')
             ->once()
-            ->with("short_url:100gMAe", [
+            ->with('short_url:100gMAe', [
                 'id' => 1,
                 'long_url' => $longUrl,
                 'short_url' => '100gMAe',
@@ -41,7 +40,7 @@ class UrlControllerTest extends TestCase
                 'path' => '100gMAe',
                 'long_url' => $longUrl,
                 'short_url' => 'http://localhost/r/100gMAe',
-            ]
+            ],
         ]);
 
         self::assertDatabaseHas('urls', [

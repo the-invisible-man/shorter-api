@@ -4,8 +4,8 @@ namespace Tests\Http\V1\Controllers;
 
 use App\Console\Commands\FlushUrlCount;
 use Illuminate\Support\Facades\Artisan;
-use Tests\TestCase;
 use Mockery as m;
+use Tests\TestCase;
 
 class FlushUrlCountTest extends TestCase
 {

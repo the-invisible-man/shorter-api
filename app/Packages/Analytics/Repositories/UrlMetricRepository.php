@@ -8,21 +8,22 @@ interface UrlMetricRepository
 {
     /**
      * @param string $path
+     *
      * @return UrlMetric|null
      */
     public function findByPath(string $path): ?UrlMetric;
 
     /**
      * @param string $path
-     * @param int $count
+     * @param int    $count
+     *
      * @return UrlMetric
      */
     public function create(string $path, int $count = 0): UrlMetric;
 
     /**
      * @param UrlMetric $metric
-     * @param int $incrementBy
-     * @return void
+     * @param int       $incrementBy
      */
     public function atomicIncrement(UrlMetric $metric, int $incrementBy): void;
 }

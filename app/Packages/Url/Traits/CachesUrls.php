@@ -11,12 +11,12 @@ trait CachesUrls
     /**
      * @return CacheInterface
      */
-    abstract function getCache(): CacheInterface;
+    abstract public function getCache(): CacheInterface;
 
     /**
      * @return LoggerInterface
      */
-    abstract function getLogger(): LoggerInterface;
+    abstract public function getLogger(): LoggerInterface;
 
     /**
      * @param string $path
@@ -30,15 +30,13 @@ trait CachesUrls
 
     /**
      * @param Url $url
-     *
-     * @return void
      */
     protected function cacheUrl(Url $url): void
     {
         try {
             $this->getCache()->set($this->makeCacheKey($url->short_url), $url->toCache(), config('cache.url_cache_ttl'));
         } catch (\Exception $e) {
-            $this->getLogger()->error("There was an error puting URL in cache", [
+            $this->getLogger()->error('There was an error puting URL in cache', [
                 'path' => $url->short_url,
                 'message' => $e->getMessage(),
                 'exception' => $e,

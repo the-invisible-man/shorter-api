@@ -35,5 +35,5 @@ return [
 
     CsvBulkJobService::class => [
         'max_row_limit' => 20000,
-    ]
+    ],
 ];

@@ -9,8 +9,8 @@ class AnalyticsService
 {
     /**
      * @param UrlMetricRepository $repository
-     * @param LoggerInterface $logger
-     * @param \Redis $redis
+     * @param LoggerInterface     $logger
+     * @param \Redis              $redis
      */
     public function __construct(
         protected UrlMetricRepository $repository,
@@ -21,13 +21,13 @@ class AnalyticsService
 
     /**
      * @param string $path
-     * @param int $increment
-     * @return void
+     * @param int    $increment
      */
     public function increaseDbCount(string $path, int $increment): void
     {
-        if (!($urlMetric = $this->repository->findByPath($path))) {
+        if (! ($urlMetric = $this->repository->findByPath($path))) {
             $this->repository->create($path, $increment);
+
             return;
         }
 
@@ -37,7 +37,6 @@ class AnalyticsService
     /**
      * @param string $path
      *
-     * @return void
      * @throws \RedisException
      */
     public function increaseMemoryCount(string $path): void
@@ -52,6 +51,7 @@ class AnalyticsService
 
     /**
      * @param string $path
+     *
      * @return string
      */
     protected function makeUrlKey(string $path): string

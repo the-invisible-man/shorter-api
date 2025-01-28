@@ -8,9 +8,9 @@ class CsvProcessComplete
 {
     /**
      * @param ProcessBulkCsv $job
-     * @param int $totalProcessed
-     * @param int $totalFailures
-     * @param int[] $urlIds
+     * @param int            $totalProcessed
+     * @param int            $totalFailures
+     * @param int[]          $urlIds
      */
     public function __construct(
         public ProcessBulkCsv $job,

@@ -90,7 +90,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="logo-placeholder">Logo</div>
+    <div class="logo-placeholder">ShortLink</div>
 
     <input type="text" id="longUrl" placeholder="Enter a long URL here...">
     <button onclick="shortenUrl()">Shorten URL</button>

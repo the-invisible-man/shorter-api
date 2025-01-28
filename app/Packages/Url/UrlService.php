@@ -8,8 +8,8 @@ use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\Url;
 use App\Packages\Url\Repositories\JobRepository;
 use App\Packages\Url\Structs\CsvProcessComplete;
-use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Database\DatabaseManager;
 use League\Csv\Reader;
 use League\Csv\Writer;
 use Psr\Log\LoggerInterface;
@@ -18,18 +18,18 @@ use Psr\SimpleCache\InvalidArgumentException;
 class UrlService
 {
     /**
-     * @param UrlReadService $urlReadService
-     * @param UrlWriteService $urlWriteService
-     * @param Dispatcher $dispatcher
-     * @param DatabaseManager $databaseManager
-     * @param LoggerInterface $logger
-     * @param JobRepository $jobRepository
+     * @param UrlReadService    $urlReadService
+     * @param UrlWriteService   $urlWriteService
+     * @param Dispatcher        $dispatcher
+     * @param DatabaseManager   $databaseManager
+     * @param LoggerInterface   $logger
+     * @param JobRepository     $jobRepository
      * @param CsvBulkJobService $jobService
      */
     public function __construct(
         protected UrlReadService $urlReadService,
-        protected UrlWriteService  $urlWriteService,
-        protected Dispatcher  $dispatcher,
+        protected UrlWriteService $urlWriteService,
+        protected Dispatcher $dispatcher,
         protected DatabaseManager $databaseManager,
         protected LoggerInterface $logger,
         protected JobRepository $jobRepository,
@@ -39,8 +39,10 @@ class UrlService
 
     /**
      * @param string $shortUrl
-     * @return Url|null
+     *
      * @throws InvalidArgumentException
+     *
+     * @return Url|null
      */
     public function visitUrl(string $shortUrl): ?Url
     {
@@ -53,11 +55,12 @@ class UrlService
         return $url;
     }
 
-
     /**
      * @param ProcessBulkCsv $job
-     * @return CsvProcessComplete|null
+     *
      * @throws \Throwable
+     *
+     * @return CsvProcessComplete|null
      */
     public function createFromCsv(ProcessBulkCsv $job): ?CsvProcessComplete
     {
@@ -70,7 +73,7 @@ class UrlService
 
             $result = $this->processCsv($job);
         } catch (\Exception $e) {
-            $this->logger->error("Failed to process CSV file", [
+            $this->logger->error('Failed to process CSV file', [
                 'jobId' => $job->getJobId(),
                 'message' => $e->getMessage(),
                 'origin' => $job->getOrigin(),
@@ -104,9 +107,11 @@ class UrlService
 
     /**
      * @param ProcessBulkCsv $job
-     * @param int $maxAttempts
-     * @return CsvProcessComplete
+     * @param int            $maxAttempts
+     *
      * @throws \Throwable
+     *
+     * @return CsvProcessComplete
      */
     protected function processCsv(ProcessBulkCsv $job, int $maxAttempts = 3): CsvProcessComplete
     {
@@ -140,7 +145,7 @@ class UrlService
                     // retry in a subsequent request.
                     $destination = '';
 
-                    $this->logger->error("Failed to create single url in bulk create", [
+                    $this->logger->error('Failed to create single url in bulk create', [
                         'jobId' => $job->getJobId(),
                         'long_url' => $longUrl,
                         'message' => $e->getMessage(),
@@ -173,6 +178,7 @@ class UrlService
      * other third-party websocket service with event-based pricing tiers.
      *
      * @param int $totalRows
+     *
      * @return int
      */
     protected function calculateUpdateInterval(int $totalRows): int
@@ -188,6 +194,7 @@ class UrlService
      * @param int $totalProcessed
      * @param int $totalRows
      * @param int $updateInterval
+     *
      * @return bool
      */
     protected function shouldBroadcast(int $totalProcessed, int $totalRows, int $updateInterval): bool
@@ -202,9 +209,11 @@ class UrlService
      * loading the entire thing into memory.
      *
      * @param string $origin
-     * @return \Generator
+     *
      * @throws \League\Csv\Exception
      * @throws \League\Csv\UnavailableStream
+     *
+     * @return \Generator
      */
     protected function readFile(string $origin): \Generator
     {
@@ -217,8 +226,10 @@ class UrlService
 
     /**
      * @param string $destination
-     * @return Writer
+     *
      * @throws \League\Csv\UnavailableStream
+     *
+     * @return Writer
      */
     protected function createOutputStream(string $destination): Writer
     {

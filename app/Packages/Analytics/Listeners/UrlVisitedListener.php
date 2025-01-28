@@ -16,7 +16,7 @@ class UrlVisitedListener
 
     /**
      * @param UrlVisited $event
-     * @return void
+     *
      * @throws \RedisException
      */
     public function handle(UrlVisited $event): void

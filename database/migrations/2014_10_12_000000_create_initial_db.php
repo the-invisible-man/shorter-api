@@ -25,7 +25,7 @@ return new class extends Migration {
                 'pending',
                 'in-progress',
                 'failed',
-                'completed'
+                'completed',
             ])->default('pending');
 
             $table->string('original_csv_path');

@@ -10,7 +10,8 @@ class EloquentJobRepository implements JobRepository
      * @param string $original_csv_path
      * @param string $destination_csv_path
      * @param string $status
-     * @param int $totalRows
+     * @param int    $totalRows
+     *
      * @return BulkCsvJob
      */
     public function create(
@@ -33,8 +34,7 @@ class EloquentJobRepository implements JobRepository
 
     /**
      * @param BulkCsvJob $job
-     * @param string $status
-     * @return void
+     * @param string     $status
      */
     public function update(BulkCsvJob $job, string $status): void
     {
@@ -44,6 +44,7 @@ class EloquentJobRepository implements JobRepository
 
     /**
      * @param string $id
+     *
      * @return BulkCsvJob|null
      */
     public function find(string $id): ?BulkCsvJob

@@ -21,7 +21,7 @@ class AnalyticsControllerTest extends TestCase
                 'id' => $metric->id,
                 'path' => $metric->path,
                 'count' => $metric->count,
-            ]
+            ],
         ]);
     }
 

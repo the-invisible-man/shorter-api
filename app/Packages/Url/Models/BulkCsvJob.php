@@ -16,5 +16,4 @@ use Carbon\Carbon;
  */
 class BulkCsvJob extends Model
 {
-
 }

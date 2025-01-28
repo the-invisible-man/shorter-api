@@ -3,8 +3,8 @@
 namespace Tests\Http\V1\Controllers;
 
 use App\Packages\Analytics\AnalyticsService;
-use Tests\TestCase;
 use Mockery as m;
+use Tests\TestCase;
 
 class AnalyticsServiceTest extends TestCase
 {

@@ -5,7 +5,7 @@ namespace App\Packages\Url\Models;
 use App\Model;
 
 /**
- * @property int $id
+ * @property int    $id
  * @property string $long_url
  * @property string $short_url
  */

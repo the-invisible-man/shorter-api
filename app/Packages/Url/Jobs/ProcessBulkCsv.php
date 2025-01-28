@@ -10,9 +10,9 @@ class ProcessBulkCsv implements ShouldQueue
 {
     /**
      * @param BulkCsvJob $job
-     * @param string $origin
-     * @param string $destination
-     * @param string $totalRows
+     * @param string     $origin
+     * @param string     $destination
+     * @param string     $totalRows
      */
     public function __construct(
         protected BulkCsvJob $job,
@@ -23,7 +23,6 @@ class ProcessBulkCsv implements ShouldQueue
     }
 
     /**
-     * @return void
      * @throws \Throwable
      */
     public function handle(): void

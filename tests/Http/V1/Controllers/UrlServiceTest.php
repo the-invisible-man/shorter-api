@@ -12,8 +12,8 @@ use App\Packages\Url\UrlService;
 use Illuminate\Contracts\Broadcasting\Broadcaster;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Event;
-use Tests\TestCase;
 use Mockery as m;
+use Tests\TestCase;
 
 class UrlServiceTest extends TestCase
 {
@@ -138,6 +138,7 @@ class UrlServiceTest extends TestCase
 
         Bus::assertDispatched(function (BulkUrlCreated $higherOrderEvent) {
             self::assertCount(9, $higherOrderEvent->getUrlIds());
+
             return true;
         });
 

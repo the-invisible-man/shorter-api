@@ -5,12 +5,12 @@ namespace Tests\Http\V1\Controllers;
 use App\Packages\Url\CsvBulkJobService;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\BulkCsvJob;
-use Ramsey\Uuid\Uuid;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use League\Csv\Reader;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class JobControllerTest extends TestCase
@@ -28,8 +28,8 @@ class JobControllerTest extends TestCase
         $response->assertStatus(201);
         $response->assertJson([
             'data' => [
-                'status' => 'pending'
-            ]
+                'status' => 'pending',
+            ],
         ]);
 
         Bus::assertDispatched(function (ProcessBulkCsv $job) {
@@ -65,11 +65,11 @@ class JobControllerTest extends TestCase
                     'file' => [
                         [
                             'type' => 'max_row_limit',
-                            'message' => 'The CSV exceeds the row limit of 3.'
-                        ]
-                    ]
-                ]
-            ]
+                            'message' => 'The CSV exceeds the row limit of 3.',
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -91,11 +91,11 @@ class JobControllerTest extends TestCase
                     'file' => [
                         [
                             'type' => 'invalid_url',
-                            'message' => 'The URL "google.igloo" is invalid.'
-                        ]
-                    ]
-                ]
-            ]
+                            'message' => 'The URL "google.igloo" is invalid.',
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
