@@ -40,6 +40,8 @@ return new class extends Migration {
             $table->uuid('id')->primary();
             $table->string('path')->unique()->index();
             $table->integer('count')->default(0);
+
+            $table->timestamps();
         });
     }
 

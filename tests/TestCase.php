@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Packages\Analytics\Models\UrlMetric;
 use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\Models\Url;
 use App\Packages\Url\Repositories\JobRepository;
@@ -54,5 +55,22 @@ abstract class TestCase extends BaseTestCase
         $job->save();
 
         return $job;
+    }
+
+    /**
+     * @param string $path
+     * @param int $count
+     * @return UrlMetric
+     */
+    protected function createMetric(string $path, int $count): UrlMetric
+    {
+        $metric = new UrlMetric;
+
+        $metric->path = $path;
+        $metric->count = $count;
+
+        $metric->save();
+
+        return $metric;
     }
 }

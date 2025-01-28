@@ -76,8 +76,8 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapAnalyticsAPIRoutes(): void
     {
         Route::group(['as' => 'analytics::v1::', 'prefix' => 'analytics/v1'], function (Router $router) {
-            $router->group(['prefix' => 'urls'], function (Router $router) {
-                $router->get('{url}', ['as' => 'urls.get', 'uses' => '\App\Http\V1\UrlController@get']);
+            $router->group(['prefix' => 'metrics'], function (Router $router) {
+                $router->get('{path}', ['as' => 'metric.get', 'uses' => '\App\Packages\Analytics\Http\V1\Controllers\AnalyticsController@find']);
             });
         });
     }
