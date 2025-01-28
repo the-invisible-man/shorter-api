@@ -186,6 +186,8 @@
             margin-top: 10px;
         }
     </style>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
 </head>
 <body>
 <div class="container">
