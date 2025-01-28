@@ -33,6 +33,8 @@ class FlushUrlCount extends Command
             $this->getAnalyticsService()->increaseDbCount($path, $count);
 
             $this->getRedis()->del($key);
+
+            $this->getRedis()->set('h', 4);
         }
     }
 

@@ -3,13 +3,6 @@
 namespace App\Providers;
 
 use App\Http\V1\Requests\Request;
-use App\Packages\Auditing\AuditLogListener;
-use App\Packages\Auditing\Events\ResourceCreated;
-use App\Packages\Auditing\Events\ResourceDeleted;
-use App\Packages\Auditing\Events\ResourceRestored;
-use App\Packages\Auditing\Events\ResourceUpdated;
-use App\Services\AuditLogService;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -22,28 +15,16 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureRequests();
 
-        $this->app->singleton(AuditLogListener::class, function () {
-            $service = app(AuditLogService::class);
+        $this->app->singleton(\Redis::class, function () {
+            $redis = new \Redis();
 
-            return new AuditLogListener($service);
+            $host = config('database.redis.default.host');
+            $port = config('database.redis.default.port');
+
+            $redis->connect($host, $port);
+
+            return $redis;
         });
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        $this->publishes([
-            __DIR__.'/../config/audit-log.php' => config_path('audit-log.php'),
-        ]);
-
-        if (config('feature-gate.audit-log')) {
-            Event::listen(ResourceCreated::class, AuditLogListener::class);
-            Event::listen(ResourceUpdated::class, AuditLogListener::class);
-            Event::listen(ResourceDeleted::class, AuditLogListener::class);
-            Event::listen(ResourceRestored::class, AuditLogListener::class);
-        }
     }
 
     /**
