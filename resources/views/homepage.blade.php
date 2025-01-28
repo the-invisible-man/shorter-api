@@ -39,6 +39,8 @@
             align-items: center;
             font-size: 1.2em;
             color: #f0f0f0;
+            background: url('./img/logo.webp') no-repeat center;
+            background-size: contain;
         }
 
         input[type="text"] {
@@ -191,7 +193,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="logo-placeholder">ShortLink</div>
+    <div class="logo-placeholder"></div>
 
     <input type="text" id="longUrl" placeholder="Enter a long URL here...">
     <button onclick="shortenUrl()">Shorten URL</button>
