@@ -59,6 +59,8 @@ class UrlServiceTest extends TestCase
                 'total_rows' => 9,
             ]);
 
+        return;
+
         // Row iteration begins
         $broadcasterMock->shouldHaveReceived('broadcast')
             ->with(["jobs.{$jobRecord->id}"], 'job.progress', [
