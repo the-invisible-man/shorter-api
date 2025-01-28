@@ -195,8 +195,8 @@
 <div class="container">
     <div class="logo-placeholder"></div>
 
-    <input type="text" id="longUrl" placeholder="Enter a long URL here...">
-    <button onclick="shortenUrl()">Shorten URL</button>
+    <input type="text" id="longUrl" placeholder="Enter a long URL here">
+    <button onclick="shortenUrl()">Get ShortLink</button>
 
     <div id="shortUrlDisplay" class="short-url" onclick="copyToClipboard()"></div>
     <div id="copiedMessage" class="copied-message">Copied to clipboard!</div>
