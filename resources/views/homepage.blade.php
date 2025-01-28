@@ -121,6 +121,7 @@
         .progress-bar-container {
             margin-top: 20px;
             text-align: center;
+            display: none;
         }
 
         .progress-bar {
@@ -141,6 +142,7 @@
 
         .status {
             font-size: 1em;
+            margin-top: 5px;
         }
     </style>
 </head>
@@ -228,6 +230,7 @@
             }
 
             const data = await response.json();
+            showProgressBar();
             subscribeToJobUpdates(data.data.id);
         } catch (error) {
             alert(`Error: ${error.message}`);
@@ -284,6 +287,11 @@
                 alert('CSV processing failed. Please try again.');
             }
         });
+    }
+
+    function showProgressBar() {
+        const progressBarContainer = document.getElementById('progressBarContainer');
+        progressBarContainer.style.display = 'block';
     }
 </script>
 </body>
