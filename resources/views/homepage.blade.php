@@ -131,6 +131,7 @@
             overflow: hidden;
             margin: 10px 0;
             height: 20px;
+            position: relative;
         }
 
         .progress-bar-fill {
@@ -138,6 +139,18 @@
             background: #3fa9f5;
             width: 0%;
             transition: width 0.3s ease;
+        }
+
+        .progress-bar-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 0;
+            left: 0;
+            height: 100%;
+            line-height: 20px;
+            color: #f0f0f0;
+            font-size: 0.9em;
         }
 
         .status {
@@ -171,6 +184,7 @@
     <div class="progress-bar-container" id="progressBarContainer">
         <div class="progress-bar">
             <div class="progress-bar-fill" id="progressBarFill"></div>
+            <div class="progress-bar-text" id="progressBarText">0%</div>
         </div>
         <div class="status" id="status">Status: Pending</div>
     </div>
@@ -272,6 +286,7 @@
 
             const statusElement = document.getElementById('status');
             const progressBarFill = document.getElementById('progressBarFill');
+            const progressBarText = document.getElementById('progressBarText');
 
             // Update status
             statusElement.textContent = `Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
@@ -280,11 +295,10 @@
             if (status === 'in-progress' || status === 'completed') {
                 const progress = (processed / total_rows) * 100;
                 progressBarFill.style.width = `${progress}%`;
+                progressBarText.textContent = `${Math.round(progress)}%`;
             }
 
-            if (status === 'completed') {
-                alert('CSV processing completed successfully!');
-            } else if (status === 'failed') {
+            if (status === 'failed') {
                 alert('CSV processing failed. Please try again.');
             }
         });
