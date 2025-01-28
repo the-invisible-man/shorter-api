@@ -3,6 +3,7 @@
 namespace App\Packages\Url\Models;
 
 use App\Model;
+use App\Packages\Url\Repositories\JobRepository;
 use Carbon\Carbon;
 
 /**
@@ -16,4 +17,11 @@ use Carbon\Carbon;
  */
 class BulkCsvJob extends Model
 {
+    /**
+     * @return bool
+     */
+    public function isComplete(): bool
+    {
+        return $this->status === JobRepository::STATUS['completed'];
+    }
 }

@@ -63,7 +63,7 @@ class JobController extends Controller
     {
         $job = $this->repository->find($jobId);
 
-        if (! $job) {
+        if (! $job || ! $job->isComplete()) {
             $this->throwNotFoundException();
         }
 
