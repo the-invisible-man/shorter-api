@@ -230,10 +230,10 @@
             }
 
             const data = await response.json();
-            console.log(data);
             showProgressBar();
             subscribeToJobUpdates(data.data.id);
         } catch (error) {
+            console.log(error);
             alert(`Error: ${error.message}`);
         }
     }
