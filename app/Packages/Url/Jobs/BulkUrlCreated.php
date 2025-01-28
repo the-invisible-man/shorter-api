@@ -4,12 +4,18 @@ namespace App\Packages\Url\Jobs;
 
 use App\Packages\Url\Events\UrlCreated;
 use App\Packages\Url\Repositories\UrlRepository;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Psr\Log\LoggerInterface;
 
 class BulkUrlCreated implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     /**
      * @param array $urlIds
      */

@@ -4,18 +4,24 @@ namespace App\Packages\Url\Jobs;
 
 use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\UrlService;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class ProcessBulkCsv implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     /**
-     * @param BulkCsvJob $job
+     * @param BulkCsvJob $jobRecord
      * @param string     $origin
      * @param string     $destination
      * @param string     $totalRows
      */
     public function __construct(
-        protected BulkCsvJob $job,
+        protected BulkCsvJob $jobRecord,
         protected string $origin,
         protected string $destination,
         protected string $totalRows,
@@ -35,7 +41,7 @@ class ProcessBulkCsv implements ShouldQueue
      */
     public function getJobId(): string
     {
-        return $this->job->id;
+        return $this->jobRecord->id;
     }
 
     /**
@@ -43,7 +49,7 @@ class ProcessBulkCsv implements ShouldQueue
      */
     public function getJobRecord(): BulkCsvJob
     {
-        return $this->job;
+        return $this->jobRecord;
     }
 
     /**
