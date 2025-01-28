@@ -379,7 +379,7 @@
             }
 
             const data = await response.json();
-            updateAnalyticsResult(data.count);
+            updateAnalyticsResult(data.data.count);
         } catch (error) {
             alert(`Error: ${error.message}`);
         }
