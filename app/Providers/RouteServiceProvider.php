@@ -36,6 +36,8 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::get('ping', ['as' => 'ping', 'uses' => '\App\Http\StatusController@ping']);
 
+        Route::get('/', [\App\Http\V1\Controllers\HomepageController::class, 'index']);
+
         $this->mapApiRoutes();
     }
 
