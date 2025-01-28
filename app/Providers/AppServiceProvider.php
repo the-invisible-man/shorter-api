@@ -16,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureRequests();
 
         $this->app->singleton(\Redis::class, function () {
-            $redis = new \Redis();
+            $redis = new \Redis;
 
             $host = config('database.redis.default.host');
             $port = config('database.redis.default.port');

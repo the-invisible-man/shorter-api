@@ -39,7 +39,7 @@ class JobController extends Controller
     {
         $this->validate($request);
 
-        $filename = Str::uuid() . '.csv';
+        $filename = Str::uuid().'.csv';
         $file = $request->file('file')
                         ->storeAs('csv', $filename);
 

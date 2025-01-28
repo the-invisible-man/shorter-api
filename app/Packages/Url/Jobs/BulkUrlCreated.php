@@ -14,7 +14,10 @@ use Psr\Log\LoggerInterface;
 
 class BulkUrlCreated implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * @param array $urlIds

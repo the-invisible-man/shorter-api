@@ -108,7 +108,7 @@ class UrlWriteService
             // remainder = seed mod base
             $remainder = bcmod($seed, (string) $base);
             // prepend the corresponding digit
-            $result = $characters[(int) $remainder] . $result;
+            $result = $characters[(int) $remainder].$result;
             // seed = floor(seed / base)
             $seed = bcdiv($seed, (string) $base, 0);
         }
