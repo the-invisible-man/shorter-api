@@ -21,6 +21,6 @@ class UrlVisitedListener
      */
     public function handle(UrlVisited $event): void
     {
-        $this->analyticsService->increaseMemoryCount($event->url->id, $event->url->short_url);
+        $this->analyticsService->increaseMemoryCount($event->url->short_url);
     }
 }

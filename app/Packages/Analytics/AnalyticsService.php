@@ -20,13 +20,13 @@ class AnalyticsService
     }
 
     /**
-     * @param int $path
+     * @param string $path
      * @param int $increment
      * @return void
      */
-    public function increaseDbCount(int $path, int $increment): void
+    public function increaseDbCount(string $path, int $increment): void
     {
-        if ($urlMetric = $this->repository->findByPath($path)) {
+        if (!($urlMetric = $this->repository->findByPath($path))) {
             $this->repository->create($path, $increment);
             return;
         }
