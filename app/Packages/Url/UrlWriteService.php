@@ -101,13 +101,19 @@ class UrlWriteService
         $base = strlen($characters);
         $result = '';
 
-        while ($seed > 0) {
-            $remainder = $seed % $base;
-            $result = $characters[$remainder].$result;
-            $seed = intdiv($seed, $base);
+        // We need to use bccomp() to avoid losing precision of very large
+        // numbers as this can tend to happen in PHP even when running on
+        // a 64-bit system.
+        while (bccomp($seed, '0') === 1) {
+            // remainder = seed mod base
+            $remainder = bcmod($seed, (string) $base);
+            // prepend the corresponding digit
+            $result = $characters[(int) $remainder] . $result;
+            // seed = floor(seed / base)
+            $seed = bcdiv($seed, (string) $base, 0);
         }
 
-        return $result;
+        return $result === '' ? '0' : $result;
     }
 
     /**

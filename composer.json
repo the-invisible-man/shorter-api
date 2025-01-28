@@ -13,7 +13,8 @@
         "laravel/tinker": "^2.8",
         "league/csv": "^9.0",
         "pusher/pusher-php-server": "^7.2",
-        "pusher/pusher-push-notifications": "*"
+        "pusher/pusher-push-notifications": "*",
+        "ext-bcmath": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
