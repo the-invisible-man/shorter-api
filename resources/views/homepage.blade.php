@@ -192,7 +192,7 @@
 
     function revealShortUrl(shortUrl) {
         const shortUrlDisplay = document.getElementById('shortUrlDisplay');
-        shortUrlDisplay.textContent = `Shortened URL: ${shortUrl}`;
+        shortUrlDisplay.textContent = `${shortUrl}`;
         shortUrlDisplay.classList.add('visible');
     }
 
