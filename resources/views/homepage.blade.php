@@ -98,11 +98,24 @@
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
+            cursor: pointer;
         }
 
         .short-url.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        .copied-message {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #3fa9f5;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .copied-message.visible {
+            opacity: 1;
         }
     </style>
 </head>
@@ -113,7 +126,8 @@
     <input type="text" id="longUrl" placeholder="Enter a long URL here...">
     <button onclick="shortenUrl()">Shorten URL</button>
 
-    <div id="shortUrlDisplay" class="short-url"></div>
+    <div id="shortUrlDisplay" class="short-url" onclick="copyToClipboard()"></div>
+    <div id="copiedMessage" class="copied-message">Copied to clipboard!</div>
 
     <div class="csv-upload">
         <div class="instructions">
@@ -180,6 +194,21 @@
         const shortUrlDisplay = document.getElementById('shortUrlDisplay');
         shortUrlDisplay.textContent = `Shortened URL: ${shortUrl}`;
         shortUrlDisplay.classList.add('visible');
+    }
+
+    function copyToClipboard() {
+        const shortUrlDisplay = document.getElementById('shortUrlDisplay');
+        const copiedMessage = document.getElementById('copiedMessage');
+
+        navigator.clipboard.writeText(shortUrlDisplay.textContent).then(() => {
+            copiedMessage.classList.add('visible');
+            setTimeout(() => {
+                copiedMessage.classList.remove('visible');
+            }, 2000);
+        }).catch(err => {
+            alert('Failed to copy to clipboard.');
+            console.error(err);
+        });
     }
 </script>
 </body>
