@@ -10,6 +10,7 @@ use App\Packages\Url\Http\Requests\V1\CreateJob;
 use App\Packages\Url\Http\Serializers\V1\BulkCsvJobSerializer;
 use App\Packages\Url\Repositories\JobRepository;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -38,8 +39,9 @@ class JobController extends Controller
     {
         $this->validate($request);
 
+        $filename = Str::uuid() . '.csv';
         $file = $request->file('file')
-                        ->store('csv');
+                        ->storeAs('csv', $filename);
 
         try {
             $job = $this->service->createBulkCsvJob(storage_path("app/{$file}"));
