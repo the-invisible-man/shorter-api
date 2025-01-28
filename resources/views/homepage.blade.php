@@ -171,23 +171,33 @@
         }
     }
 
-    function uploadCsv() {
+    async function uploadCsv() {
         const fileInput = document.getElementById('csvFile');
         const file = fileInput.files[0];
+
         if (!file) {
             alert('Please select a CSV file to upload.');
             return;
         }
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const csvContent = event.target.result;
-            // Add your CSV processing logic here
-            console.log('Uploaded CSV content:', csvContent);
-            alert('CSV file uploaded successfully!');
-        };
+        const formData = new FormData();
+        formData.append('file', file);
 
-        reader.readAsText(file);
+        try {
+            const response = await fetch('/shorten/v1/urls/jobs', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to upload CSV file.');
+            }
+
+            alert('CSV file uploaded successfully!');
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        }
     }
 
     function revealShortUrl(shortUrl) {
