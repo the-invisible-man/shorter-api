@@ -122,15 +122,15 @@ This approach offers the following advantages:
 * We can process very large files if needed. The current limit is around 20k URLs in a CSV. This number was picked arbitrarily but is configurable.
 
 #### Web Socket Events
-The two-step process nature of the flow means that we need a way to keep the user informed about the status of their CSV job. Since the request ends after file validation, and before processing, ShortLink uses Pusher web sockets to send updates to the client side about the status of the job: from the number of row currently processed, to failures or successes.
+The two-step process nature of the flow means that we need a way to keep the user informed about the status of their CSV job. Since the request ends after file validation, and before processing, ShortLink uses Pusher web sockets to send updates to the client side about the status of the job: from the number of rows currently processed, to failures or successes.
 
 #### CSV Processing Diagram
 ![Shorter (Diagrams) - CSV Processing](https://github.com/user-attachments/assets/eea4d260-b6ae-4f6a-923e-31790871a772)
 
 ### URL Redirection
-URL redirection is pretty straightforward. Check the cache for the url given the path, if found, get from cache, if not found, get from DB. When a URL is accessed, a Laravel `UrlVisited` event is fired, which the Analytics domains is subscribed to.
+URL redirection is pretty straightforward. Check the cache for the url given the path, if found, get from cache, if not found, get from DB and cache. When a URL is accessed, a Laravel `UrlVisited` event is fired, which the Analytics domain is subscribed to.
 
-Additionally, all redirects return a `302` status code as opposed to `301`. The reason being that a `301` will make browsers skip the ShortLink hop and go directly to the long url, and this will impact analytics reporting.
+Additionally, all redirects return a `302` status code as opposed to `301`. The reason being that a `301` will make browsers skip the ShortLink hop and go directly to the long url on subsequent requests, and this will impact analytics reporting.
 
 ![Shorter (Diagrams) - Redirection](https://github.com/user-attachments/assets/8c8d1335-63ed-4f75-b1f2-45bce187b592)
 
