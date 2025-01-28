@@ -15,6 +15,8 @@ This API was built with two guiding principles: high availability, and very low 
 
 This system attempts to abide by the design-driven development, and is event driven in nature. There are two business domains in the world of ShortLink: URL, and Analytics. Both of these domains create a clear separation of business concerns, and avoid directly interacting with each other, instead, consuming events as the only means of communication. The events are currently Laravel events, but the system is designed such the domains could become two separate microservices communicating over a message queue.
 
+![Shorter (Diagrams) - Chart](https://github.com/user-attachments/assets/024c0f0c-533f-4992-a589-2bad275da338)
+
 ## API
 Below, are all the endpoints that comprise the ShortLink service:
 
