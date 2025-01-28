@@ -25,7 +25,7 @@ You can find the API routes at `RouteServiceProvider`.
 ## Overview
 This API was built with two guiding principles: high availability, and very low latency. This was achieved by making deliberate decisions about everything from the technologies used, to the code architecture.
 
-This system attempts to abide by the design-driven development, and is event driven in nature. There are two business domains in the world of ShortLink: URL, and Analytics. Both of these domains create a clear separation of business concerns, and avoid directly interacting with each other, instead, consuming events as the only means of communication. The events are currently Laravel events, but the system is designed such the domains could become two separate microservices communicating over a message queue.
+This system attempts to abide by design-driven principles, and is event driven in nature. There are two business domains in the world of ShortLink: URL, and Analytics. Both of these domains create a clear separation of business concerns, and avoid directly interacting with each other, instead, consuming events as the only means of communication. The events are currently Laravel events, but the system is designed such the domains could become two separate microservices communicating over a message queue.
 
 | High Availability                                                                   | Low Latency                                                                 |
 |-------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
