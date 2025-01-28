@@ -131,7 +131,8 @@
             }
 
             const data = await response.json();
-            alert(`Shortened URL: ${data.short_url}`);
+            console.log(data);
+            // alert(`Shortened URL: ${data.short_url}`);
         } catch (error) {
             alert(`Error: ${error.message}`);
         }
