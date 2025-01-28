@@ -30,7 +30,7 @@ trait CachesUrls
 
     /**
      * @param Url $url
-     * @return void
+     *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
     protected function cacheUrl(Url $url): void
