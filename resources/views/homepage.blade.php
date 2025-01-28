@@ -157,6 +157,34 @@
             font-size: 1em;
             margin-top: 5px;
         }
+
+        .analytics {
+            margin-top: 30px;
+            padding: 15px;
+            background: #1e3c5a;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .analytics h3 {
+            margin-bottom: 10px;
+        }
+
+        .analytics .analytics-result {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .analytics small {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #a0a0a0;
+        }
+
+        .analytics button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -187,6 +215,15 @@
             <div class="progress-bar-text" id="progressBarText">0%</div>
         </div>
         <div class="status" id="status">Status: Pending</div>
+    </div>
+
+    <div class="analytics">
+        <h3>Short URL Analytics</h3>
+        <input type="text" id="shortUrlInput" placeholder="Paste your short URL here...">
+        <button onclick="fetchAnalytics()">Get Analytics</button>
+        <div class="analytics-result" id="analyticsResult">Visits: 0</div>
+        <small>Eventually consistent to the minute</small>
+        <button onclick="refreshAnalytics()">Refresh</button>
     </div>
 </div>
 
@@ -319,6 +356,47 @@
         document.body.appendChild(anchor);
         anchor.click();
         document.body.removeChild(anchor);
+    }
+
+    async function fetchAnalytics() {
+        const input = document.getElementById('shortUrlInput').value;
+        const shortUrlPath = extractShortUrlPath(input);
+
+        if (!shortUrlPath) {
+            alert('Please enter a valid short URL.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/analytics/v1/metrics/${shortUrlPath}`);
+            if (response.status === 404) {
+                updateAnalyticsResult(0);
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch analytics.');
+            }
+
+            const data = await response.json();
+            updateAnalyticsResult(data.count);
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        }
+    }
+
+    function refreshAnalytics() {
+        fetchAnalytics();
+    }
+
+    function extractShortUrlPath(url) {
+        const match = url.match(/\/r\/(.+)$/);
+        return match ? match[1] : null;
+    }
+
+    function updateAnalyticsResult(count) {
+        const resultElement = document.getElementById('analyticsResult');
+        resultElement.textContent = `Visits: ${count}`;
     }
 </script>
 </body>

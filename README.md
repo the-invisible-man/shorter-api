@@ -112,7 +112,7 @@ This approach offers the following advantages:
 #### Web Socket Events
 The two-step process nature of the flow means that we need a way to keep the user informed about the status of their CSV job. Since the request ends after file validation, and before processing, ShortLink uses Pusher web sockets to send updates to the client side about the status of the job: from the number of row currently processed, to failures or successes.
 
-#### Flow Diagram
+#### CSV Processing Diagram
 ![Shorter (Diagrams) - CSV Processing](https://github.com/user-attachments/assets/eea4d260-b6ae-4f6a-923e-31790871a772)
 
 ### URL Redirection
