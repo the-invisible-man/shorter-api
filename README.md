@@ -15,7 +15,9 @@ This API was built with two guiding principles: high availability, and very low 
 
 This system attempts to abide by the design-driven development, and is event driven in nature. There are two business domains in the world of ShortLink: URL, and Analytics. Both of these domains create a clear separation of business concerns, and avoid directly interacting with each other, instead, consuming events as the only means of communication. The events are currently Laravel events, but the system is designed such the domains could become two separate microservices communicating over a message queue.
 
-![Shorter (Diagrams) - Chart](https://github.com/user-attachments/assets/024c0f0c-533f-4992-a589-2bad275da338)
+| High Availability                                                                   | Low Latency                                                                 |
+|-------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| System was designed such that it can scale horizontally to adjust to traffic spikes | Aim to minimize any overhead when redirecting the user to their destination |
 
 ## API
 Below, are all the endpoints that comprise the ShortLink service:
@@ -61,7 +63,7 @@ Returns the CSV file as a browser download.
 **GET** `/r/{path}`
 **Response**
 ```
-Redirects with 301 or 404 if not found.
+Redirects with 302 (Found) or 404 if not found.
 ```
 
 ### Get URL Metric
@@ -113,4 +115,12 @@ The two-step process nature of the flow means that we need a way to keep the use
 #### Flow Diagram
 ![Shorter (Diagrams) - CSV Processing](https://github.com/user-attachments/assets/eea4d260-b6ae-4f6a-923e-31790871a772)
 
+### URL Redirection
+URL redirection is pretty straightforward. Check the cache for the url given the path, if found, get from cache, if not found, get from DB. When a URL is accessed, a Laravel `UrlVisited` event is fired, which the Analytics domains is subscribed to.
+
+Additionally, all redirects return a `302` status code as opposed to `301`. The reason being that a `301` will make browsers skip the ShortLink hop and go directly to the long url, and this will impact analytics reporting.
+
 ### Analytics Tracking
+The Analytics domain listens to `UrlVisited` events to track all visits. For each visit, a counter is increased in Redis for that one visit. ShortLink uses Redis to track visits due to its ability to handle large throughput with minimal overhead. This gets the user to their destination faster than if we wrote to the DB on every visit.
+
+Every minute, a cron job that flushes the redis counts runs, and updates the URL metrics to the DB, where it is then available for reading. This makes the analytics eventually consistent at a slight delay of 1 minute. Additionally, this keeps the database from becoming overwhelmed during high traffic since thousands of URL visits in a single minute would only result in a few database writes.
