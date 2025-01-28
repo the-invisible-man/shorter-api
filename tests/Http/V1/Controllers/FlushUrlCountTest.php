@@ -2,7 +2,7 @@
 
 namespace Tests\Http\V1\Controllers;
 
-use App\Console\Commands\FlushUrlCount;
+use App\Packages\Analytics\Commands\FlushUrlCount;
 use Illuminate\Support\Facades\Artisan;
 use Mockery as m;
 use Tests\TestCase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Packages\Analytics\Commands;
 
 use App\Packages\Analytics\AnalyticsService;
 use Illuminate\Console\Command;
