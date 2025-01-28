@@ -109,15 +109,32 @@
 </div>
 
 <script>
-    function shortenUrl() {
+    async function shortenUrl() {
         const longUrl = document.getElementById('longUrl').value;
         if (!longUrl) {
             alert('Please enter a URL to shorten.');
             return;
         }
         // Add your API call logic here
-        console.log('Shortened URL for:', longUrl);
-        alert('URL shortened successfully!');
+        try {
+            const response = await fetch('/shorten/v1/urls', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ long_url: longUrl }),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Something went wrong');
+            }
+
+            const data = await response.json();
+            alert(`Shortened URL: ${data.short_url}`);
+        } catch (error) {
+            alert(`Error: ${error.message}`);
+        }
     }
 
     function uploadCsv() {
