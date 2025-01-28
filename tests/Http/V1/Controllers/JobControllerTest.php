@@ -5,8 +5,12 @@ namespace Tests\Http\V1\Controllers;
 use App\Packages\Url\CsvBulkJobService;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\BulkCsvJob;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
+use League\Csv\Reader;
 use Tests\TestCase;
 
 class JobControllerTest extends TestCase
@@ -73,7 +77,7 @@ class JobControllerTest extends TestCase
     {
         $file = UploadedFile::fake()->createWithContent('happy.csv', file_get_contents(base_path('tests/Stubs/bad-urls.csv')));
 
-        $response = $this->call('POST', route('shorten::v1::urls.jobs.create'), [], [], [
+        $response = $this->call(Request::METHOD_POST, route('shorten::v1::urls.jobs.create'), [], [], [
             'file' => $file,
         ]);
 
@@ -93,5 +97,41 @@ class JobControllerTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    public function testDownload(): void
+    {
+        $job = $this->createJob(
+            'something',
+            base_path('tests/Stubs/happy-2.csv'),
+            9
+        );
+
+        $response = $this->call(Request::METHOD_GET, route('shorten::v1::urls.jobs.download', [
+            'id' => $job->id,
+        ]));
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertHeader('Content-Disposition', 'attachment; filename=processed-happy-2.csv');
+
+        $reader = Reader::createFromString($response->streamedContent());
+
+        $total = 0;
+
+        foreach ($reader->getRecords() as $record) {
+            $total++;
+        }
+
+        self::assertEquals(9, $total);
+    }
+
+    public function testDownloadNotFound(): void
+    {
+        $response = $this->call(Request::METHOD_GET, route('shorten::v1::urls.jobs.download', [
+            'id' => Uuid::uuid4(),
+        ]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 }

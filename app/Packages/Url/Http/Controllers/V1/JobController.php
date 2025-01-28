@@ -66,10 +66,10 @@ class JobController extends Controller
     }
 
     /**
-     * @param int $jobId
+     * @param string $jobId
      * @return StreamedResponse
      */
-    public function download(int $jobId): StreamedResponse
+    public function download(string $jobId): StreamedResponse
     {
         $job = $this->repository->find($jobId);
 

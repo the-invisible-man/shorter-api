@@ -30,6 +30,6 @@ class Url extends Model
      */
     public function toDestinationUrl(): string
     {
-        return url($this->short_url);
+        return url('r/'.$this->short_url);
     }
 }

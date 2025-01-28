@@ -2,7 +2,9 @@
 
 namespace Tests;
 
+use App\Packages\Url\Models\BulkCsvJob;
 use App\Packages\Url\Models\Url;
+use App\Packages\Url\Repositories\JobRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
@@ -26,5 +28,31 @@ abstract class TestCase extends BaseTestCase
         $url->save();
 
         return $url;
+    }
+
+    /**
+     * @param string $original_csv_path
+     * @param string $destination_csv_path
+     * @param int $totalRows
+     * @param string $status
+     * @return BulkCsvJob
+     */
+    protected function createJob(
+        string $original_csv_path,
+        string $destination_csv_path,
+        int $totalRows,
+        string $status = JobRepository::STATUS['pending']
+    ): BulkCsvJob
+    {
+        $job = new BulkCsvJob;
+
+        $job->original_csv_path = $original_csv_path;
+        $job->destination_csv_path = $destination_csv_path;
+        $job->total_rows = $totalRows;
+        $job->status = $status;
+
+        $job->save();
+
+        return $job;
     }
 }

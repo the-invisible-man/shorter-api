@@ -43,10 +43,10 @@ class EloquentJobRepository implements JobRepository
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return BulkCsvJob|null
      */
-    public function find(int $id): ?BulkCsvJob
+    public function find(string $id): ?BulkCsvJob
     {
         return BulkCsvJob::find($id);
     }

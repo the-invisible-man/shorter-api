@@ -40,7 +40,7 @@ class UrlControllerTest extends TestCase
             'data' => [
                 'path' => '100gMAe',
                 'long_url' => $longUrl,
-                'short_url' => 'http://localhost/100gMAe',
+                'short_url' => 'http://localhost/r/100gMAe',
             ]
         ]);
 
