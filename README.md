@@ -1,3 +1,8 @@
+<div align="center">
+  <img src="" alt="ShortLink Logo" width="200" />
+  <h1>ShortLink</h1>
+</div>
+
 # ShortLink API
 
 ![tests](https://github.com/the-invisible-man/shorter-api/actions/workflows/laravel.yml/badge.svg)
