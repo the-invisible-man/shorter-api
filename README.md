@@ -8,6 +8,8 @@ ShortLink is a URL shortening service like TinyURL. It enables users to shorten 
 ## Quick Start
 ShortLink has been deployed with Laravel Forge to a live site. You can find the application at  https://xhortl.ink/
 
+You can use the CSV in: https://github.com/the-invisible-man/shorter-api/blob/main/tests/Stubs/happy.csv
+
 **NOTE:** The frontend has been quickly put together with HTML and vanilla JS. It can be unstable, therefore you should refresh the page whenever attempting to resubmit a flow.
 
 ## Overview
