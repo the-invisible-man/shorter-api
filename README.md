@@ -32,7 +32,7 @@ This system attempts to abide by the design-driven development, and is event dri
 | System was designed such that it can scale horizontally to adjust to traffic spikes | Aim to minimize any overhead when redirecting the user to their destination |
 
 ## API
-Below, are all the endpoints that comprise the ShortLink service:
+Below, are all the endpoints comprising the ShortLink service:
 
 ### Create Single Link
 **POST** `/shorten/v1/urls`
