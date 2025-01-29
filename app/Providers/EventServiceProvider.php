@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Packages\Analytics\Listeners\UrlCreatedListener;
 use App\Packages\Analytics\Listeners\UrlVisitedListener;
+use App\Packages\Url\Events\UrlCreated;
 use App\Packages\Url\Events\UrlVisited;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         UrlVisited::class => [
             UrlVisitedListener::class,
+        ],
+        UrlCreated::class => [
+            UrlCreatedListener::class,
         ],
     ];
 
