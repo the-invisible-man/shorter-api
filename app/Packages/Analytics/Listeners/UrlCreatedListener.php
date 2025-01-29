@@ -17,8 +17,9 @@ class UrlCreatedListener
 
     /**
      * Create the metric record for this URL to ensure that the user
-     * see at least "0" if they pull analytics for a URL before it's
-     * visited.
+     * sees at least "0" if they pull analytics for a URL before it's
+     * visited. We upsert because this listener runs async for batch
+     * transactions.
      *
      * @param UrlCreated $event
      */
