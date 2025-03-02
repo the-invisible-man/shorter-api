@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShortLink</title>
+    <meta name="description" content="Got a long url? Not anymore! Shorten your url here.">
+
+    <meta property="og:url" content="https://xhortl.ink/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ShortLink">
+    <meta property="og:description" content="Got a long url? Not anymore! Shorten your url here.">
+    <meta property="og:image" content="">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="xhortl.ink">
+    <meta property="twitter:url" content="https://xhortl.ink/">
+    <meta name="twitter:title" content="ShortLink">
+    <meta name="twitter:description" content="Got a long url? Not anymore! Shorten your url here.">
+    <meta name="twitter:image" content="">
+
     <style>
         body {
             font-family: Arial, sans-serif;
