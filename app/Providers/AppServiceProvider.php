@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Http\V1\Requests\Request;
+use App\Packages\Voyager\VoyagerService;
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
@@ -24,6 +26,14 @@ class AppServiceProvider extends ServiceProvider
             $redis->connect($host, $port);
 
             return $redis;
+        });
+
+        $this->app->singleton(VoyagerService::class, function () {
+            $client = new Client([
+                'http_errors' => false,
+            ]);
+
+            return new VoyagerService($client);
         });
     }
 
