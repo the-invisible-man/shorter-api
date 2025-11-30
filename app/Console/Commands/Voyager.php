@@ -29,7 +29,7 @@ class Voyager extends Command
         $this->info("Voyager 1.0-alpha (See logs for interactions)");
         $this->info("Started voyager service...");
 
-        $service->run();
+        $service->run($this->output);
 
         return \Symfony\Component\Console\Command\Command::SUCCESS;
     }
