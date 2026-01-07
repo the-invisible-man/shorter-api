@@ -19,7 +19,7 @@ class Url extends Model
     public $keyType = 'int';
 
     public $casts = [
-        'flagged' => 'boolean'
+        'flagged' => 'bool'
     ];
 
     /**
