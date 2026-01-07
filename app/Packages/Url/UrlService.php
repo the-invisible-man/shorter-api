@@ -3,6 +3,7 @@
 namespace App\Packages\Url;
 
 use App\Packages\Url\Events\UrlVisited;
+use App\Packages\Url\Exceptions\FlaggedUrlException;
 use App\Packages\Url\Jobs\BulkUrlCreated;
 use App\Packages\Url\Jobs\ProcessBulkCsv;
 use App\Packages\Url\Models\Url;

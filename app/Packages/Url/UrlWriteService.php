@@ -66,6 +66,25 @@ class UrlWriteService
     }
 
     /**
+     * @param Url $url
+     * @param array $data
+     *
+     * @return void
+     *
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function update(Url $url, array $data = []): void
+    {
+        $this->repository->update(
+            $url,
+            $data['short_url'] ?? $url->short_url,
+            $data['flagged'] ?? $url->flagged,
+        );
+
+        $this->cache->delete($this->makeCacheKey($url->short_url));
+    }
+
+    /**
      * @param int $id
      *
      * @return int

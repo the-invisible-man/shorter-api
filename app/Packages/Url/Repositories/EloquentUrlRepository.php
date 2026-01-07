@@ -45,12 +45,17 @@ class EloquentUrlRepository implements UrlRepository
     }
 
     /**
-     * @param Url    $url
+     * @param Url $url
      * @param string $shortUrl
+     * @param bool $flagged
+     *
+     * @return void
      */
-    public function update(Url $url, string $shortUrl): void
+    public function update(Url $url, string $shortUrl, bool $flagged = false): void
     {
         $url->short_url = $shortUrl;
+        $url->flagged = $flagged;
+
         $url->save();
     }
 

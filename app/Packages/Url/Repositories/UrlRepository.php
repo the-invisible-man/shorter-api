@@ -30,8 +30,9 @@ interface UrlRepository
     /**
      * @param Url    $url
      * @param string $shortUrl
+     * @param bool   $flagged
      */
-    public function update(Url $url, string $shortUrl): void;
+    public function update(Url $url, string $shortUrl, bool $flagged = false): void;
 
     /**
      * @param array $data

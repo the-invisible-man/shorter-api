@@ -5,9 +5,10 @@ namespace App\Packages\Url\Models;
 use App\Model;
 
 /**
- * @property int    $id
- * @property string $long_url
- * @property string $short_url
+ * @property int        $id
+ * @property string     $long_url
+ * @property string     $short_url
+ * @property boolean    $flagged
  */
 class Url extends Model
 {
@@ -31,5 +32,13 @@ class Url extends Model
     public function toDestinationUrl(): string
     {
         return url('r/'.$this->short_url);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFlagged(): bool
+    {
+        return $this->flagged;
     }
 }

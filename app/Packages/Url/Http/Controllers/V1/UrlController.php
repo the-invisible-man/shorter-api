@@ -10,6 +10,7 @@ use App\Packages\Url\UrlService;
 use App\Packages\Url\UrlWriteService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class UrlController extends Controller
@@ -45,14 +46,18 @@ class UrlController extends Controller
      *
      * @throws \Psr\SimpleCache\InvalidArgumentException
      *
-     * @return RedirectResponse
+     * @return RedirectResponse|View
      */
-    public function route(string $path): RedirectResponse
+    public function route(string $path): RedirectResponse|View
     {
-        if ($url = $this->urlService->visitUrl($path)) {
-            return redirect($url->long_url, Response::HTTP_FOUND);
+        $url = $this->urlService->visitUrl($path);
+
+        abort_unless(isset($url), Response::HTTP_NOT_FOUND);
+
+        if ($url->isFlagged()) {
+            return view('flagged', ['url' => $url]);
         }
 
-        abort(404);
+        return redirect($url->long_url, Response::HTTP_FOUND);
     }
 }
