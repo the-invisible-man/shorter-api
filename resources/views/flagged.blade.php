@@ -153,6 +153,8 @@
 
     // Redacted display if you want to avoid showing full path; keeping full by default
     $displayLong = $rawLong;
+
+    $href = $isHttp ? $rawLong : '#';
 @endphp
 
 <div class="wrap">
@@ -218,8 +220,7 @@
                     Go back
                 </a>
 
-                {{-- Proceed form (POST recommended) --}}
-                <form method="POST" action="{{ route('links.proceed', ['short' => $shortCode]) }}" style="margin:0; display:inline-flex; gap:10px; align-items:center;">
+                <form method="GET" action="{{ $rawLong }}" style="margin:0; display:inline-flex; gap:10px; align-items:center;">
                     @csrf
 
                     <button id="proceedBtn" class="btn btn-danger btn-disabled" type="submit" disabled>
