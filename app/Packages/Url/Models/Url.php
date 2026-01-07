@@ -18,6 +18,10 @@ class Url extends Model
 
     public $keyType = 'int';
 
+    public $casts = [
+        'flagged' => 'boolean'
+    ];
+
     /**
      * @return array
      */
