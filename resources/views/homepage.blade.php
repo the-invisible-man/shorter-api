@@ -1,271 +1,598 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShortLink</title>
-    <meta name="description" content="Got a long url? Not anymore! Shorten your url here.">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta property="og:url" content="https://xhortl.ink/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="ShortLink">
-    <meta property="og:description" content="Got a long url? Not anymore! Shorten your url here.">
-    <meta property="og:image" content="">
+    <title>ShortLink — Fast, simple URL shortener</title>
+    <meta name="description" content="Got a long URL? Not anymore. Shorten links, bulk upload via CSV, and check visit analytics." />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://xhortl.ink/" />
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta property="twitter:domain" content="xhortl.ink">
-    <meta property="twitter:url" content="https://xhortl.ink/">
-    <meta name="twitter:title" content="ShortLink">
-    <meta name="twitter:description" content="Got a long url? Not anymore! Shorten your url here.">
-    <meta name="twitter:image" content="">
+    <!-- Open Graph -->
+    <meta property="og:url" content="https://xhortl.ink/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ShortLink — Fast, simple URL shortener" />
+    <meta property="og:description" content="Shorten links, bulk upload via CSV, and check visit analytics." />
+    <meta property="og:site_name" content="ShortLink" />
+    <!-- TODO: set a real social preview image -->
+    <meta property="og:image" content="https://xhortl.ink/img/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:domain" content="xhortl.ink" />
+    <meta name="twitter:url" content="https://xhortl.ink/" />
+    <meta name="twitter:title" content="ShortLink — Fast, simple URL shortener" />
+    <meta name="twitter:description" content="Shorten links, bulk upload via CSV, and check visit analytics." />
+    <meta name="twitter:image" content="https://xhortl.ink/img/og-image.png" />
+
+    <!-- PWA / Icons -->
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    <meta name="theme-color" content="#0b1020" />
+
+    <!-- Optional: structured data -->
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "ShortLink",
+          "url": "https://xhortl.ink/",
+          "description": "Shorten links, bulk upload via CSV, and check visit analytics."
+        }
+    </script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(145deg, #1e3c5a, #112840);
-            color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        :root{
+            color-scheme: light;
+            --bg:#0b1020;
+            --card: rgba(255,255,255,.08);
+            --card-border: rgba(255,255,255,.14);
+            --text: rgba(255,255,255,.92);
+            --muted: rgba(255,255,255,.70);
+            --muted-2: rgba(255,255,255,.55);
+
+            --danger:#ff5a6a;
+            --warn:#fbbf24;
+            --info:#60a5fa;
+
+            --btn: rgba(255,255,255,.10);
+            --btn-border: rgba(255,255,255,.18);
+            --shadow: 0 20px 60px rgba(0,0,0,.45);
+
+            --radius: 20px;
+            --radius-sm: 14px;
         }
 
-        .container {
-            background: #12263a;
-            padding: 20px 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
+        * { box-sizing: border-box; }
+        body{
+            margin:0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+            background:
+                radial-gradient(1200px 600px at 20% 20%, rgba(255, 90, 106, .18), transparent 55%),
+                radial-gradient(900px 500px at 80% 30%, rgba(251, 191, 36, .14), transparent 50%),
+                radial-gradient(1000px 800px at 50% 90%, rgba(59, 130, 246, .12), transparent 55%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 28px 16px;
+            display: grid;
+            place-items: center;
         }
 
-        .logo-placeholder {
-            width: 120px;
-            height: 120px;
-            background: #1e3c5a;
-            border: 2px dashed #f0f0f0;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2em;
-            color: #f0f0f0;
-            background: url('./img/logo.webp') no-repeat center;
-            background-size: contain;
-        }
+        a { color: inherit; }
 
-        input[type="text"] {
+        .wrap{
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: none;
-            border-radius: 8px;
-            background: #1e3c5a;
-            color: #f0f0f0;
-            font-size: 1em;
+            max-width: 1040px;
         }
 
-        input[type="text"]:focus {
+        .header{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap: 12px;
+        }
+
+        .logo{
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.14);
+            box-shadow: 0 10px 30px rgba(0,0,0,.22);
+            display:grid;
+            place-items:center;
+            overflow:hidden;
+        }
+
+        .logo img{
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            display:block;
+        }
+
+        .brand h1{
+            margin: 0;
+            font-size: 18px;
+            letter-spacing: .2px;
+            line-height: 1.2;
+        }
+
+        .brand p{
+            margin: 2px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .pill{
+            display:inline-flex;
+            align-items:center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.06);
+            color: var(--muted);
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .grid{
+            display:grid;
+            gap: 14px;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 860px){
+            .grid{
+                grid-template-columns: 1.2fr .8fr;
+                align-items: start;
+            }
+        }
+
+        .card{
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow:hidden;
+        }
+
+        .card-head{
+            padding: 18px 20px;
+            border-bottom: 1px solid rgba(255,255,255,.10);
+            display:flex;
+            align-items:flex-start;
+            justify-content:space-between;
+            gap: 12px;
+        }
+
+        .card-title{
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .2px;
+            line-height: 1.35;
+        }
+
+        .card-sub{
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .card-body{
+            padding: 18px 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .row{
+            display:flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input{
+            width: 100%;
+            padding: 12px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.06);
+            color: var(--text);
+            font-size: 14px;
             outline: none;
-            box-shadow: 0 0 5px #3fa9f5;
+            transition: box-shadow .2s ease, border-color .2s ease;
         }
 
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            background: #3fa9f5;
-            color: #f0f0f0;
-            font-size: 1em;
+        .input::placeholder{ color: rgba(255,255,255,.45); }
+
+        .input:focus{
+            border-color: rgba(96, 165, 250, .35);
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, .12);
+        }
+
+        .btn{
+            appearance:none;
+            border: 1px solid var(--btn-border);
+            background: var(--btn);
+            color: var(--text);
+            padding: 11px 14px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor:pointer;
+            transition: filter .15s ease, transform .05s ease;
+            display:inline-flex;
+            gap: 8px;
+            align-items:center;
+            justify-content:center;
+            text-decoration:none;
+            user-select:none;
+        }
+
+        .btn:hover{ filter: brightness(1.06); }
+        .btn:active{ transform: translateY(1px); }
+
+        .btn-primary{
+            background: rgba(96, 165, 250, .16);
+            border-color: rgba(96, 165, 250, .32);
+        }
+
+        .btn-ghost{
+            background: rgba(255,255,255,.06);
+            border-color: rgba(255,255,255,.12);
+            color: rgba(255,255,255,.82);
+            font-weight: 650;
+        }
+
+        .btn-danger{
+            background: rgba(255, 90, 106, .14);
+            border-color: rgba(255, 90, 106, .30);
+        }
+
+        .split{
+            display:grid;
+            gap: 10px;
+            grid-template-columns: 1fr;
+        }
+
+        @media(min-width: 560px){
+            .split{
+                grid-template-columns: 1fr auto;
+                align-items: center;
+            }
+        }
+
+        .short-url{
+            padding: 12px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.06);
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: .2px;
+            color: rgba(255,255,255,.92);
             cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        button:hover {
-            background: #2b87cc;
-        }
-
-        .csv-upload {
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .instructions {
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-
-        .csv-upload input[type="file"] {
-            display: block;
-            margin: 10px 0;
-        }
-
-        .short-url {
-            margin-top: 20px;
-            padding: 10px;
-            background: #1e3c5a;
-            border-radius: 8px;
-            font-size: 1.5em;
-            text-align: center;
-            color: #3fa9f5;
             opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            cursor: pointer;
+            transform: translateY(14px);
+            transition: opacity .45s ease, transform .45s ease;
+            word-break: break-all;
         }
-
-        .short-url.visible {
+        .short-url.visible{
             opacity: 1;
             transform: translateY(0);
         }
 
-        .copied-message {
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: #3fa9f5;
+        .hint{
+            font-size: 12px;
+            color: var(--muted-2);
+            margin-top: -4px;
+        }
+
+        .copied-message{
+            font-size: 12px;
+            color: rgba(96, 165, 250, .95);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity .25s ease;
+        }
+        .copied-message.visible{ opacity: 1; }
+
+        .divider{
+            height: 1px;
+            background: rgba(255,255,255,.10);
+            margin: 2px 0;
         }
 
-        .copied-message.visible {
-            opacity: 1;
+        .callout{
+            display:flex;
+            gap: 10px;
+            padding: 12px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(251, 191, 36, .22);
+            background: rgba(251, 191, 36, .10);
+            color: rgba(255,255,255,.86);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+        .callout svg{ flex: 0 0 auto; margin-top: 2px; }
+
+        .csv{
+            display:grid;
+            gap: 10px;
         }
 
-        .progress-bar-container {
-            margin-top: 20px;
-            text-align: center;
-            display: none;
+        .file{
+            display:grid;
+            gap: 8px;
+            padding: 12px 12px;
+            border-radius: 16px;
+            border: 1px dashed rgba(255,255,255,.18);
+            background: rgba(255,255,255,.05);
         }
 
-        .progress-bar {
-            width: 100%;
-            background: #1e3c5a;
+        input[type="file"]{
+            color: rgba(255,255,255,.75);
+        }
+
+        .progress-wrap{
+            display:none;
+            gap: 10px;
+        }
+
+        .progress-bar{
+            width:100%;
+            height: 22px;
+            border-radius: 999px;
+            overflow:hidden;
+            position:relative;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.06);
+        }
+        .progress-bar-fill{
+            height:100%;
+            width:0%;
+            background: rgba(96, 165, 250, .75);
+            transition: width .3s ease;
+        }
+        .progress-bar-text{
+            position:absolute;
+            inset:0;
+            display:grid;
+            place-items:center;
+            font-size: 12px;
+            font-weight: 800;
+            color: rgba(255,255,255,.92);
+            text-shadow: 0 2px 10px rgba(0,0,0,.35);
+        }
+
+        .status{
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .analytics-result{
+            padding: 12px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.06);
+            font-size: 14px;
+            font-weight: 800;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 12px;
+        }
+
+        .footer{
+            margin-top: 14px;
+            display:flex;
+            justify-content:space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: rgba(255,255,255,.55);
+            font-size: 12px;
+        }
+
+        .kbd{
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 12px;
+            padding: 2px 6px;
             border-radius: 8px;
-            overflow: hidden;
-            margin: 10px 0;
-            height: 20px;
-            position: relative;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: #3fa9f5;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .progress-bar-text {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            top: 0;
-            left: 0;
-            height: 100%;
-            line-height: 20px;
-            color: #f0f0f0;
-            font-size: 0.9em;
-        }
-
-        .status {
-            font-size: 1em;
-            margin-top: 5px;
-        }
-
-        .analytics {
-            margin-top: 30px;
-            padding: 15px;
-            background: #1e3c5a;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .analytics h3 {
-            margin-bottom: 10px;
-        }
-
-        .analytics .analytics-result {
-            font-size: 1.2em;
-            margin: 10px 0;
-        }
-
-        .analytics small {
-            display: block;
-            margin-top: 10px;
-            font-size: 0.8em;
-            color: #a0a0a0;
-        }
-
-        .analytics button {
-            margin-top: 10px;
+            border: 1px solid rgba(255,255,255,.14);
+            background: rgba(255,255,255,.06);
+            color: rgba(255,255,255,.75);
         }
     </style>
-    <link rel="manifest" href="./manifest.json">
-    <link rel="icon" type="image/x-icon" href="./favicon.ico">
 </head>
+
 <body>
-<div class="container">
-    <div class="logo-placeholder"></div>
-
-    <input type="text" id="longUrl" placeholder="Enter a long URL here">
-    <button onclick="shortenUrl()">Get ShortLink</button>
-
-    <div id="shortUrlDisplay" class="short-url" onclick="copyToClipboard()"></div>
-    <div id="copiedMessage" class="copied-message">Copied to clipboard!</div>
-
-    <div class="csv-upload">
-        <div class="instructions">
-            <p>Or upload a CSV file with your URLs:</p>
-            <ul>
-                <li>Each row should have one URL.</li>
-                <li>CSV format: no headers, just URLs.</li>
-            </ul>
+<div class="wrap">
+    <div class="header">
+        <div class="brand">
+            <div class="logo" aria-hidden="true">
+                <img src="./img/logo.webp" alt="" onerror="this.style.display='none'; this.parentElement.textContent='SL'; this.parentElement.style.fontWeight='800';" />
+            </div>
+            <div>
+                <h1>ShortLink</h1>
+                <p>Shorten links, bulk upload CSVs, and check visit analytics.</p>
+            </div>
         </div>
-        <input type="file" id="csvFile" accept=".csv">
-        <button onclick="uploadCsv()">Upload CSV</button>
+
+        <div class="pill" title="Tip">
+            <span class="kbd">Enter</span> to shorten
+        </div>
     </div>
 
-    <div class="progress-bar-container" id="progressBarContainer">
-        <div class="progress-bar">
-            <div class="progress-bar-fill" id="progressBarFill"></div>
-            <div class="progress-bar-text" id="progressBarText">0%</div>
+    <div class="grid">
+        <!-- Left: Shorten + CSV -->
+        <div class="card">
+            <div class="card-head">
+                <div>
+                    <p class="card-title">Shorten a URL</p>
+                    <p class="card-sub">Paste a destination URL and generate a short link.</p>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="split">
+                    <input type="text" id="longUrl" class="input" placeholder="Enter a long URL here" autocomplete="off" />
+                    <button class="btn btn-primary" onclick="shortenUrl()">
+                        <!-- link icon -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M10 13a5 5 0 0 1 0-7l1.5-1.5a5 5 0 0 1 7 7L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M14 11a5 5 0 0 1 0 7L12.5 19.5a5 5 0 1 1-7-7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Get ShortLink
+                    </button>
+                </div>
+
+                <div id="shortUrlDisplay" class="short-url" onclick="copyToClipboard()" role="button" tabindex="0"></div>
+                <div class="hint">Click the short link to copy.</div>
+                <div id="copiedMessage" class="copied-message">Copied to clipboard!</div>
+
+                <div class="divider"></div>
+
+                <div class="callout">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 2 1 21h22L12 2Z" stroke="currentColor" stroke-width="2" />
+                        <path d="M12 9v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 17h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                    <div>
+                        Bulk uploads will generate an output CSV once processing completes.
+                        Keep your file clean: one URL per row, no headers.
+                    </div>
+                </div>
+
+                <div class="csv">
+                    <div class="file">
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+                            <div style="font-weight:800;">Upload a CSV</div>
+                            <div style="color: rgba(255,255,255,.55); font-size:12px;">.csv only</div>
+                        </div>
+                        <input type="file" id="csvFile" accept=".csv" />
+                        <button class="btn btn-ghost" onclick="uploadCsv()">
+                            <!-- upload icon -->
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 16V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M7 9l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Upload CSV
+                        </button>
+                    </div>
+
+                    <div class="progress-wrap" id="progressBarContainer">
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" id="progressBarFill"></div>
+                            <div class="progress-bar-text" id="progressBarText">0%</div>
+                        </div>
+                        <div class="status" id="status">Status: Pending</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="status" id="status">Status: Pending</div>
+
+        <!-- Right: Analytics -->
+        <div class="card">
+            <div class="card-head">
+                <div>
+                    <p class="card-title">Short URL Analytics</p>
+                    <p class="card-sub">Paste a short URL to see visit counts.</p>
+                </div>
+                <span class="pill" title="Note">Eventually consistent</span>
+            </div>
+
+            <div class="card-body">
+                <input type="text" id="shortUrlInput" class="input" placeholder="Paste your short URL here..." autocomplete="off" />
+                <div class="row">
+                    <button class="btn btn-primary" onclick="fetchAnalytics()">
+                        <!-- chart icon -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M4 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M8 15v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 15V7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M16 15v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Get Analytics
+                    </button>
+
+                    <button class="btn btn-ghost" onclick="refreshAnalytics()">
+                        <!-- refresh icon -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M20 4v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="analytics-result" id="analyticsResult">
+                    <span>Visits</span>
+                    <span style="color: rgba(96,165,250,.95);">0</span>
+                </div>
+
+                <div class="hint">Counts can lag by up to a minute.</div>
+            </div>
+        </div>
     </div>
 
-    <div class="analytics">
-        <h3>Short URL Analytics</h3>
-        <input type="text" id="shortUrlInput" placeholder="Paste your short URL here...">
-        <button onclick="fetchAnalytics()">Get Analytics</button>
-        <div class="analytics-result" id="analyticsResult">Visits: 0</div>
-        <small>Eventually consistent to the minute</small>
-        <button onclick="refreshAnalytics()">Refresh</button>
+    <div class="footer">
+        <div>© <span id="year"></span> ShortLink</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="pill">Click-to-copy enabled</span>
+            <span class="pill">CSV jobs via Pusher</span>
+        </div>
     </div>
 </div>
 
 <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Enter-to-shorten
+    document.getElementById('longUrl').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') shortenUrl();
+    });
+
+    // Click-to-copy via keyboard too
+    document.getElementById('shortUrlDisplay').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') copyToClipboard();
+    });
+
     async function shortenUrl() {
-        const longUrl = document.getElementById('longUrl').value;
+        const longUrl = document.getElementById('longUrl').value.trim();
         if (!longUrl) {
             alert('Please enter a URL to shorten.');
             return;
         }
-        // Add your API call logic here
+
         try {
             const response = await fetch('/shorten/v1/urls', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ long_url: longUrl }),
             });
 
             if (!response.ok) {
-                const error = await response.json();
+                const error = await response.json().catch(() => ({}));
                 throw new Error(error.message || 'Something went wrong');
             }
 
@@ -295,7 +622,7 @@
             });
 
             if (!response.ok) {
-                const error = await response.json();
+                const error = await response.json().catch(() => ({}));
                 throw new Error(error.message || 'Failed to upload CSV file.');
             }
 
@@ -309,20 +636,20 @@
     }
 
     function revealShortUrl(shortUrl) {
-        const shortUrlDisplay = document.getElementById('shortUrlDisplay');
-        shortUrlDisplay.textContent = `${shortUrl}`;
-        shortUrlDisplay.classList.add('visible');
+        const el = document.getElementById('shortUrlDisplay');
+        el.textContent = `${shortUrl}`;
+        el.classList.add('visible');
     }
 
     function copyToClipboard() {
         const shortUrlDisplay = document.getElementById('shortUrlDisplay');
         const copiedMessage = document.getElementById('copiedMessage');
 
+        if (!shortUrlDisplay.textContent) return;
+
         navigator.clipboard.writeText(shortUrlDisplay.textContent).then(() => {
             copiedMessage.classList.add('visible');
-            setTimeout(() => {
-                copiedMessage.classList.remove('visible');
-            }, 2000);
+            setTimeout(() => copiedMessage.classList.remove('visible'), 2000);
         }).catch(err => {
             alert('Failed to copy to clipboard.');
             console.error(err);
@@ -344,10 +671,8 @@
             const progressBarFill = document.getElementById('progressBarFill');
             const progressBarText = document.getElementById('progressBarText');
 
-            // Update status
             statusElement.textContent = `Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
 
-            // Update progress bar
             if (status === 'in-progress' || status === 'completed') {
                 const progress = (processed / total_rows) * 100;
                 progressBarFill.style.width = `${progress}%`;
@@ -363,8 +688,7 @@
     }
 
     function showProgressBar() {
-        const progressBarContainer = document.getElementById('progressBarContainer');
-        progressBarContainer.style.display = 'block';
+        document.getElementById('progressBarContainer').style.display = 'grid';
     }
 
     function downloadFile(jobId) {
@@ -378,7 +702,7 @@
     }
 
     async function fetchAnalytics() {
-        const input = document.getElementById('shortUrlInput').value;
+        const input = document.getElementById('shortUrlInput').value.trim();
         const shortUrlPath = extractShortUrlPath(input);
 
         if (!shortUrlPath) {
@@ -414,8 +738,8 @@
     }
 
     function updateAnalyticsResult(count) {
-        const resultElement = document.getElementById('analyticsResult');
-        resultElement.textContent = `Visits: ${count}`;
+        const el = document.getElementById('analyticsResult');
+        el.innerHTML = `<span>Visits</span><span style="color: rgba(96,165,250,.95);">${count}</span>`;
     }
 </script>
 </body>
