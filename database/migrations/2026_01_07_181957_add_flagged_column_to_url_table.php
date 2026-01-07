@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('url', function (Blueprint $table) {
+        Schema::table('urls', function (Blueprint $table) {
             $table->boolean('flagged')->default(false);
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('url', function (Blueprint $table) {
+        Schema::table('urls', function (Blueprint $table) {
             $table->dropColumn('flagged');
         });
     }
