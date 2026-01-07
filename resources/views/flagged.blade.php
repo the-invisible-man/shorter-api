@@ -7,9 +7,6 @@
 
     <title>Link flagged for suspicious activity</title>
 
-    {{-- If you use Vite + Tailwind, this will pick up your app styles --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     <style>
         /* Fallback styling if Tailwind isn't present */
         :root {
