@@ -23,7 +23,7 @@ class Url extends Model
      */
     public function toCache(): array
     {
-        return $this->only(['id', 'short_url', 'long_url']);
+        return $this->only(['id', 'short_url', 'long_url', 'flagged']);
     }
 
     /**
