@@ -18,10 +18,6 @@ class Url extends Model
 
     public $keyType = 'int';
 
-    public $casts = [
-        'flagged' => 'bool'
-    ];
-
     /**
      * @return array
      */
@@ -44,5 +40,17 @@ class Url extends Model
     public function isFlagged(): bool
     {
         return $this->flagged;
+    }
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'flagged' => 'boolean',
+        ];
     }
 }
