@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class RedirectLegacyDomains
 {
@@ -23,7 +24,7 @@ class RedirectLegacyDomains
             $target = 'https://' . $primaryHost . $request->getRequestUri();
             // getRequestUri() includes path + query string.
 
-            return redirect()->to($target, 301)
+            return redirect()->to($target, Response::HTTP_MOVED_PERMANENTLY)
                 ->header('Cache-Control', 'public, max-age=31536000') // optional but common for 301
                 ->header('X-Robots-Tag', 'noindex'); // optional: prevents indexing the legacy domain
         }
