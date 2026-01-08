@@ -46,6 +46,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Redirect to New Domain
+    |--------------------------------------------------------------------------
+    |
+    | We've rebranded the product from xhortl.ink to azip.link
+    |
+    */
+    'primary_host' => env('PRIMARY_HOST', null),
+    'legacy_hosts' => array_filter(array_map('trim', explode(',', env('LEGACY_HOSTS', '')))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     |
