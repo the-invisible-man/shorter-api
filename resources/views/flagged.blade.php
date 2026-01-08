@@ -169,7 +169,7 @@
                 </svg>
             </div>
             <div>
-                <h1 class="h1">This short link has been reported for suspicious activity</h1>
+                <h1 class="h1">This link has been reported for suspicious activity</h1>
                 <p class="sub">
                     For your safety, we’re showing a warning page instead of redirecting automatically.
                     If you choose to continue, you do so at your own risk.
