@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class RedirectLegacyDomains
 {
@@ -12,6 +13,11 @@ class RedirectLegacyDomains
     {
         $primaryHost = config('app.primary_host');
         $legacyHosts = config('app.legacy_hosts', []);
+
+        Log::info("Legacy redirect middleware...", [
+            'primary_host' => $primaryHost,
+            'legacy_hosts' => $legacyHosts,
+        ]);
 
         if (!$primaryHost || empty($legacyHosts)) {
             return $next($request);
@@ -24,10 +30,14 @@ class RedirectLegacyDomains
             $target = 'https://' . $primaryHost . $request->getRequestUri();
             // getRequestUri() includes path + query string.
 
+            Log::info("Redirecting to {$target}");
+
             return redirect()->to($target, Response::HTTP_MOVED_PERMANENTLY)
                 ->header('Cache-Control', 'public, max-age=31536000') // optional but common for 301
                 ->header('X-Robots-Tag', 'noindex'); // optional: prevents indexing the legacy domain
         }
+
+        Log::info("No redirection needed");
 
         return $next($request);
     }
