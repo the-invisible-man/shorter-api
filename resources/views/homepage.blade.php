@@ -4,19 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>ShortLink — Fast, simple URL shortener</title>
+    <title>AzipLink — Fast, simple URL shortener</title>
     <meta name="description" content="Got a long URL? Not anymore. Shorten links, bulk upload via CSV, and check visit analytics." />
     <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://xhortl.ink/" />
+    <link rel="canonical" href="https://azip.link/" />
 
     <!-- Open Graph -->
-    <meta property="og:url" content="https://xhortl.ink/" />
+    <meta property="og:url" content="https://azip.link/" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="ShortLink — Fast, simple URL shortener" />
+    <meta property="og:title" content="AzipLink — Fast, simple URL shortener" />
     <meta property="og:description" content="Shorten links, bulk upload via CSV, and check visit analytics." />
-    <meta property="og:site_name" content="ShortLink" />
+    <meta property="og:site_name" content="AzipLink" />
     <!-- TODO: set a real social preview image -->
-    <meta property="og:image" content="https://xhortl.ink/img/og-image.png" />
+    <meta property="og:image" content="https://azip.link/img/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_US" />
@@ -24,10 +24,10 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:domain" content="xhortl.ink" />
-    <meta name="twitter:url" content="https://xhortl.ink/" />
-    <meta name="twitter:title" content="ShortLink — Fast, simple URL shortener" />
+    <meta name="twitter:url" content="https://azip.link/" />
+    <meta name="twitter:title" content="AzipLink — Fast, simple URL shortener" />
     <meta name="twitter:description" content="Shorten links, bulk upload via CSV, and check visit analytics." />
-    <meta name="twitter:image" content="https://xhortl.ink/img/og-image.png" />
+    <meta name="twitter:image" content="https://azip.link/img/og-image.png" />
 
     <!-- PWA / Icons -->
     <link rel="manifest" href="./manifest.json" />
@@ -39,8 +39,8 @@
         {
           "@context": "https://schema.org",
           "@type": "WebSite",
-          "name": "ShortLink",
-          "url": "https://xhortl.ink/",
+          "name": "AzipLink",
+          "url": "https://azip.link/",
           "description": "Shorten links, bulk upload via CSV, and check visit analytics."
         }
     </script>
@@ -429,7 +429,7 @@
                 <img src="./img/logo.webp" alt="" onerror="this.style.display='none'; this.parentElement.textContent='SL'; this.parentElement.style.fontWeight='800';" />
             </div>
             <div>
-                <h1>ShortLink</h1>
+                <h1><h1>a<span style="color:orange">zip</span>link</h1></h1>
                 <p>Shorten links, bulk upload CSVs, and check visit analytics.</p>
             </div>
         </div>
@@ -458,7 +458,7 @@
                             <path d="M10 13a5 5 0 0 1 0-7l1.5-1.5a5 5 0 0 1 7 7L17 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             <path d="M14 11a5 5 0 0 1 0 7L12.5 19.5a5 5 0 1 1-7-7L7 11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
-                        Get ShortLink
+                        Get ⚡️ZipLink
                     </button>
                 </div>
 
@@ -555,7 +555,7 @@
     </div>
 
     <div class="footer">
-        <div>© <span id="year"></span> ShortLink</div>
+        <div>© <span id="year"></span> RushOrbit Labs</div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <span class="pill">Click-to-copy enabled</span>
             <span class="pill">CSV jobs via Pusher</span>
