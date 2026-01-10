@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <title>AzipLink — Fast, simple URL shortener</title>
     <meta name="description" content="Got a long URL? Not anymore. Shorten links, bulk upload via CSV, and check visit analytics." />
@@ -600,6 +600,10 @@
         const turnstileToken = document.getElementById('turnstileToken').value;
         if (!longUrl) {
             alert('Please enter a URL to shorten.');
+            return;
+        }
+        if (!turnstileToken) {
+            alert('Please complete the Turnstile check first.');
             return;
         }
 

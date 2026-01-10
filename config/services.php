@@ -36,4 +36,8 @@ return [
     CsvBulkJobService::class => [
         'max_row_limit' => 20000,
     ],
+
+    'turnstile' => [
+        'secret' => env('TURNSTILE_SECRET'),
+    ]
 ];

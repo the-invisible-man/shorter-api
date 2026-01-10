@@ -24,7 +24,7 @@ class VerifyTurnstileToken
         }
 
         $turnstileResponse = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'secret' => env('TURNSTILE_SECRET', 'turnstile-secret'),
+            'secret' => config('services.turnstile.secret'),
             'response' => $token,
             'remoteip' => $request->ip(),
         ]);
