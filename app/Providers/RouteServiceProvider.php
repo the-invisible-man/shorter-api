@@ -62,7 +62,6 @@ class RouteServiceProvider extends ServiceProvider
                 $router->post('/', [
                     'as' => 'urls.create',
                     'uses' => '\App\Packages\Url\Http\Controllers\V1\UrlController@create',
-                    'middleware' => 'turnstile',
                 ]);
                 $router->post('jobs', ['as' => 'urls.jobs.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\JobController@create']);
 
