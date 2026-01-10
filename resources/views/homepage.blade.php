@@ -468,12 +468,15 @@
                     </button>
                 </div>
 
+                <input type="hidden" id="turnstileToken" />
                 <div
                     class="cf-turnstile"
                     data-sitekey="0x4AAAAAACLWHN55A61n34C7"
                     data-theme="light"
-                    data-size="normal"
-                    data-callback="onSuccess"
+                    data-size="invisible"
+                    data-callback="onTurnstileSuccess"
+                    data-expired-callback="onTurnstileExpired"
+                    data-error-callback="onTurnstileExpired"
                 ></div>
                 <div id="shortUrlDisplay" class="short-url" onclick="copyToClipboard()" role="button" tabindex="0"></div>
                 <div class="hint">Click the short link to copy.</div>
@@ -590,18 +593,33 @@
         if (e.key === 'Enter') copyToClipboard();
     });
 
+    let pendingLongUrl = null;
+
     async function shortenUrl() {
         const longUrl = document.getElementById('longUrl').value.trim();
+        const turnstileToken = document.getElementById('turnstileToken').value;
         if (!longUrl) {
             alert('Please enter a URL to shorten.');
             return;
         }
 
+        if (!turnstileToken) {
+            pendingLongUrl = longUrl;
+            if (window.turnstile) {
+                window.turnstile.execute();
+            }
+            return;
+        }
+
+        await submitShortenUrl(longUrl, turnstileToken);
+    }
+
+    async function submitShortenUrl(longUrl, turnstileToken) {
         try {
             const response = await fetch('/shorten/v1/urls', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ long_url: longUrl }),
+                body: JSON.stringify({ long_url: longUrl, turnstile_token: turnstileToken }),
             });
 
             if (!response.ok) {
@@ -613,6 +631,12 @@
             revealShortUrl(data.data.short_url);
         } catch (error) {
             alert(`Error: ${error.message}`);
+        } finally {
+            document.getElementById('turnstileToken').value = '';
+            pendingLongUrl = null;
+            if (window.turnstile) {
+                window.turnstile.reset();
+            }
         }
     }
 
@@ -753,6 +777,18 @@
     function updateAnalyticsResult(count) {
         const el = document.getElementById('analyticsResult');
         el.innerHTML = `<span>Visits</span><span style="color: rgba(96,165,250,.95);">${count}</span>`;
+    }
+
+    function onTurnstileSuccess(token) {
+        document.getElementById('turnstileToken').value = token;
+        if (pendingLongUrl) {
+            submitShortenUrl(pendingLongUrl, token);
+        }
+    }
+
+    function onTurnstileExpired() {
+        document.getElementById('turnstileToken').value = '';
+        pendingLongUrl = null;
     }
 </script>
 <script>
