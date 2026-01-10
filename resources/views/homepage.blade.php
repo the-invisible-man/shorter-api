@@ -419,6 +419,12 @@
             color: rgba(255,255,255,.75);
         }
     </style>
+    <link rel="preconnect" href="https://challenges.cloudflare.com">
+    <script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+    ></script>
 </head>
 
 <body>
@@ -462,6 +468,13 @@
                     </button>
                 </div>
 
+                <div
+                    class="cf-turnstile"
+                    data-sitekey="0x4AAAAAACLWHN55A61n34C7"
+                    data-theme="light"
+                    data-size="normal"
+                    data-callback="onSuccess"
+                ></div>
                 <div id="shortUrlDisplay" class="short-url" onclick="copyToClipboard()" role="button" tabindex="0"></div>
                 <div class="hint">Click the short link to copy.</div>
                 <div id="copiedMessage" class="copied-message">Copied to clipboard!</div>
