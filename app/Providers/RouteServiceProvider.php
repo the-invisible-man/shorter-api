@@ -59,7 +59,11 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::group(['as' => 'shorten::v1::', 'prefix' => 'shorten/v1'], function (Router $router) {
             $router->group(['prefix' => 'urls'], function (Router $router) {
-                $router->post('/', ['as' => 'urls.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\UrlController@create']);
+                $router->post('/', [
+                    'as' => 'urls.create',
+                    'uses' => '\App\Packages\Url\Http\Controllers\V1\UrlController@create',
+                    'middleware' => 'turnstile',
+                ]);
                 $router->post('jobs', ['as' => 'urls.jobs.create', 'uses' => '\App\Packages\Url\Http\Controllers\V1\JobController@create']);
 
                 $router->get('/jobs/download/{id}', ['as' => 'urls.jobs.download', 'uses' => '\App\Packages\Url\Http\Controllers\V1\JobController@download']);

@@ -10,6 +10,7 @@ class CreateUrl extends Request
     {
         return [
             'long_url' => 'required|url',
+            'turnstile_token' => 'required|string',
         ];
     }
 
@@ -17,6 +18,7 @@ class CreateUrl extends Request
     {
         return [
             'long_url' => $this->get('long_url'),
+            'turnstile_token' => $this->get('turnstile_token'),
         ];
     }
 }

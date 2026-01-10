@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'turnstile' => \App\Http\Middleware\VerifyTurnstileToken::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'uuid' => \App\Http\Middleware\ValidateUuid::class,
     ];
